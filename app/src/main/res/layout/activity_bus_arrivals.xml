@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/arrival_view"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".app.BusArrivals">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/ArrivalsToolbar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/ArrivalsBackBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:background="#FFFFFF"
+            android:src="@drawable/back_icon"
+            android:layout_marginStart="30dp"
+            android:contentDescription="@string/back_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/arrivals"
+            android:textColor="@color/navy"
+            android:textSize="24sp"
+            android:layout_gravity="center"/>
+
+        <ImageButton
+            android:id="@+id/ArrivalsRefreshBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:background="#FFFFFF"
+            android:src="@drawable/refresh_enabled_icon"
+            android:layout_marginEnd="30dp"
+            android:contentDescription="@string/refresh"
+            />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/ArrivalsBorder1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ArrivalsToolbar">
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ArrivalsImageView"
+        android:layout_width="0dp"
+        android:layout_height="175dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ArrivalsBorder1" />
+
+    <LinearLayout
+        android:id="@+id/ArrivalsBorder2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ArrivalsImageView">
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/ArrivalsBusMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="18dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ArrivalsBorder2">
+
+        <TextView
+            android:id="@+id/ArrivalsBusName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="15dp"
+            android:layout_toStartOf="@+id/ArrivalsSavedBtn"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:focusable="true"
+            android:fontFamily="@font/inter_bold"
+            android:maxLines="1"
+            android:text="Mandalay @ Margate"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/ArrivalsBusKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ArrivalsBusName"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="152dp"
+            android:layout_toStartOf="@+id/ArrivalsSavedBtn"
+            android:text="#30630"
+            android:textColor="@color/subtitle"
+            android:textSize="15sp" />
+
+        <ImageButton
+            android:id="@+id/ArrivalsSavedBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="15dp"
+            android:layout_toStartOf="@+id/ArrivalsBusMenuBtn"
+            android:background="@color/white"
+            android:src="@drawable/saved_stops_icon" />
+
+        <ImageButton
+            android:id="@+id/ArrivalsBusMenuBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:background="@color/white"
+            android:src="@drawable/menu_icon" />
+
+        <!-- FlexboxLayout -->
+        <HorizontalScrollView
+            android:id="@+id/ArrivalsBusRouteView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ArrivalsBusKey"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            app:flexWrap="wrap"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:id="@+id/ArrivalsScrollView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ArrivalsBorder3"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ArrivalsBusMenu">
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/busArrivalsView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ArrivalsBorder3" />
+
+    <TextView
+        android:id="@+id/emptyArrivalsView"
+        android:background="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No buses expected in the next two hours."
+        android:textSize="17sp"
+        android:textColor="@color/subtitle"
+        android:fontFamily="@font/inter_bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ArrivalsBorder3"
+        android:visibility="gone"
+        >
+    </TextView>
+</androidx.constraintlayout.widget.ConstraintLayout>

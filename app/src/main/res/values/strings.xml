@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">431Transit</string>
+    <string name="map">Map</string>
+    <string name="search">Search</string>
+    <string name="saved_stops">Saved Stops</string>
+    <string name="arrivals">Arrivals</string>
+    <string name="back_button">BACK BUTTON</string>
+    <string name="refresh">REFRESH</string>
+</resources>

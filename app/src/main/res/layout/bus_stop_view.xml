@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bus_stop_view_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:id="@+id/bus_stop_image_view"
+        android:src="@drawable/placeholder_image"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/border"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/bus_stop_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_toEndOf="@+id/bus_stop_image_view"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="@font/inter_bold"
+        tools:text="Bus Stop Name" />
+
+    <TextView
+        android:id="@+id/bus_stop_key_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_toEndOf="@+id/bus_stop_image_view"
+        android:layout_below="@id/bus_stop_text_view"
+        android:textColor="@color/subtitle"
+        android:textSize="14sp"
+        tools:text="Bus Stop Key" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bus_stop_routes_constraint_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:minHeight="57dp"
+        android:layout_marginEnd="25dp"
+        android:layout_below="@+id/bus_stop_key_view"
+        android:layout_toEndOf="@+id/bus_stop_image_view"
+        >
+
+        <!-- FlexboxLayout -->
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/bus_stop_routes_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/bus_stop_routes_constraint_view"
+        android:layout_marginTop="15dp"
+        android:background="@color/border"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".app.SavedStopsFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/SavedStopsToolBar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Saved Stops"
+            android:textColor="@color/navy"
+            android:textSize="24sp"
+            android:layout_gravity="center"/>
+
+        <ImageButton
+            android:id="@+id/ArrivalsRefreshBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:background="#FFFFFF"
+            android:src="@drawable/add_icon"
+            android:layout_marginEnd="30dp"
+            android:contentDescription="Add New Category"
+            />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/SavedStopsToolBarBorder"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        app:layout_constraintBottom_toBottomOf="@+id/SavedStopsToolBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

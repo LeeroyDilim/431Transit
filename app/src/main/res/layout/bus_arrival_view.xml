@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="13dp"
+    >
+
+    <RelativeLayout
+        android:id="@+id/arrivals_view_route_badge_container"
+        android:layout_marginHorizontal="18dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="65dp"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/arrivals_view_route_badge"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/border"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center"
+            android:minWidth="50dp"
+            android:paddingHorizontal="5dp"
+            android:text="672"
+            android:textSize="25sp"
+            android:layout_centerHorizontal="true">
+
+        </TextView>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/arrivals_view_route_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:layout_toStartOf="@+id/arrivals_view_bus_arrival"
+        android:layout_toEndOf="@+id/arrivals_view_route_badge_container"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        android:ellipsize="end"
+        android:focusable="true"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:text="UofM"
+        android:textSize="18sp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/arrivals_view_bus_arrival"
+        android:layout_width="85dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/arrivals_view_bus_status"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="18dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="end|center_vertical"
+        android:text="10:00 pm"
+        android:textSize="18sp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/arrivals_view_bus_status"
+        android:layout_width="85dp"
+        android:layout_height="20dp"
+        android:layout_alignBottom="@+id/arrivals_view_route_badge_container"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="18dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="end|center_vertical"
+        android:text="Cancelled"
+        android:textSize="14sp">
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/arrivals_view_route_badge_container"
+        android:layout_marginTop="13dp"
+        android:background="@color/border"
+        android:orientation="horizontal">
+    </LinearLayout>
+</RelativeLayout>
