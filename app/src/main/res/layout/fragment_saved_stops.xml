@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/categoriesView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".app.SavedStopsFragment">
@@ -21,21 +22,20 @@
             android:id="@+id/tvCenter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Saved Stops"
             android:textColor="@color/navy"
-            android:textSize="24sp"
-            android:layout_gravity="center"/>
+            android:textSize="24sp" />
 
         <ImageButton
             android:id="@+id/ArrivalsRefreshBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
-            android:background="#FFFFFF"
-            android:src="@drawable/add_icon"
             android:layout_marginEnd="30dp"
+            android:background="#FFFFFF"
             android:contentDescription="Add New Category"
-            />
+            android:src="@drawable/add_icon" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -47,5 +47,52 @@
         app:layout_constraintBottom_toBottomOf="@+id/SavedStopsToolBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNavBorder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SavedStopsToolBarBorder">
+
+        <ExpandableListView
+            android:id="@+id/SavedStopsExpandableList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+        </ExpandableListView>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/bottomNavBorder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/bottomNavigationView3"
+        android:background="@color/border"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </View>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:backgroundTint="@color/white"
+        app:itemActiveIndicatorStyle="@color/white"
+        app:itemIconSize="40dp"
+        app:itemIconTint="@color/navy"
+        app:itemRippleColor="@null"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu"
+        tools:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

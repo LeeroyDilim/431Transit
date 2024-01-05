@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Your app theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- ... other style attributes ... -->
+    </style>
+
+    <!-- Custom style for the menu items -->
+    <style name="MyMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:itemTextAppearance">@style/MyMenuTextAppearance</item>
+        <item name="android:itemBackground">@drawable/menu_item_background</item>
+    </style>
+
+    <!-- Custom text appearance for the menu items -->
+    <style name="MyMenuTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+</resources>

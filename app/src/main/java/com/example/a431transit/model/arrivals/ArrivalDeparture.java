@@ -13,23 +13,21 @@ public class ArrivalDeparture {
     @SerializedName("estimated")
     private String estimated;
 
-    public LocalTime getScheduled() {
+    public LocalDateTime getScheduled() {
         return getLocalTime(scheduled);
     }
 
-    public LocalTime getEstimated() {
+    public LocalDateTime getEstimated() {
         return getLocalTime(estimated);
     }
 
-    private LocalTime getLocalTime(String dateTimeString)
+    private LocalDateTime getLocalTime(String dateTimeString)
     {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
 
-        LocalTime time = dateTime.toLocalTime();
-
-        return time;
+        return dateTime;
     }
 
 }

@@ -21,12 +21,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
 import com.example.a431transit.model.TransitResponse;
-import com.example.a431transit.model.arrivals.StopSchedule;
 import com.example.a431transit.model.bus_route.BusRoute;
-import com.example.a431transit.util.TransitAPIService;
+import com.example.a431transit.util.api_communication.TransitAPIService;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,11 +41,17 @@ public class BusStop implements Parcelable {
     @SerializedName("name")
     private String name;
 
+    @SerializedName("nickname")
+    private String nickname;
+
     @SerializedName("direction")
     private String direction;
 
     @SerializedName("side")
     private String side;
+
+    @SerializedName("isSaved")
+    private boolean isSaved = false;
 
     @SerializedName("centre")
     private Centre centre;
@@ -58,9 +62,6 @@ public class BusStop implements Parcelable {
     @SerializedName("cross-street")
     private CrossStreet crossStreet;
 
-    private Context context;
-    private TransitAPIService transitService;
-
     //store routes both in memory and in the cache
     private static final LruCache<String, List<BusRoute>> routeCache = new LruCache<>(5 * 1024 * 1024);
     private List<BusRoute> busRoutes;
@@ -69,23 +70,14 @@ public class BusStop implements Parcelable {
     private static final LruCache<String, Bitmap> imageCache = new LruCache<>(5 * 1024 * 1024);
     private Bitmap busImage;
 
-    public BusStop(int key, int number, String name, String direction, String side, Street street, CrossStreet crossSteet, Centre centre) {
-        this.key = key;
-        this.number = number;
-        this.name = name;
-        this.direction = direction;
-        this.side = side;
-        this.street = street;
-        this.crossStreet = crossSteet;
-        this.centre = centre;
-    }
-
     protected BusStop(Parcel in) {
         key = in.readInt();
         number = in.readInt();
         name = in.readString();
+        nickname = in.readString();
         direction = in.readString();
         side = in.readString();
+        isSaved = in.readBoolean();
         centre = in.readParcelable(Centre.class.getClassLoader());
         busRoutes = in.createTypedArrayList(BusRoute.CREATOR); // Read the list
     }
@@ -100,8 +92,10 @@ public class BusStop implements Parcelable {
         dest.writeInt(key);
         dest.writeInt(number);
         dest.writeString(name);
+        dest.writeString(nickname);
         dest.writeString(direction);
         dest.writeString(side);
+        dest.writeBoolean(isSaved);
         dest.writeParcelable(centre, flags);
         dest.writeTypedList(busRoutes);
     }
@@ -119,9 +113,6 @@ public class BusStop implements Parcelable {
     };
 
     public void loadBusRoutes(final Context context, TransitAPIService transitService, ViewGroup layout) {
-        this.context = context;
-        this.transitService = transitService;
-
         // Add a counter for retries
         final int[] retryCount = {0};
 
@@ -130,7 +121,7 @@ public class BusStop implements Parcelable {
             updateRouteView(context, busRoutes, layout);
         }
 
-        List<BusRoute> cachedRoutes = routeCache.get(String.valueOf(key) + "route");
+        List<BusRoute> cachedRoutes = routeCache.get(key + "route");
 
         if (cachedRoutes != null) {
             busRoutes = cachedRoutes;
@@ -261,11 +252,9 @@ public class BusStop implements Parcelable {
             return;
         }
 
-        String imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() + "&zoom="+zoom+"&size="+width+"x"+height+"&markers=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() + "&key=" + BuildConfig.GOOGLE_API_KEY;
-
-        if(busImage != null) {
-            imageView.setImageBitmap(busImage);
-        }
+        String imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
+                "&zoom="+zoom+"&size="+width+"x"+height+"&markers=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
+                "&key=" + BuildConfig.GOOGLE_API_KEY;
 
         // Check if the image is already in the cache
         String cacheKey = key + shape + "image";
@@ -294,48 +283,6 @@ public class BusStop implements Parcelable {
         }
     }
 
-    public StopSchedule getBusSchedule(final Context context, TransitAPIService transitService) {
-        this.context = context;
-        this.transitService = transitService;
-
-        int maxAttempts = 3;
-        int attempt = 0;
-
-        while (attempt < maxAttempts) {
-            Call<TransitResponse> call = transitService.getBusStopArrivals(key, BuildConfig.TRANSIT_API_KEY);
-
-            try {
-                Response<TransitResponse> response = call.execute();
-
-                if (response.isSuccessful()) {
-                    TransitResponse transitResponse = response.body();
-
-                    if (transitResponse != null) {
-                        return transitResponse.getStopSchedule();
-                    }
-
-                } else {
-                    Log.e("BusStop", "Error: " + response.code() + " - " + response.message());
-                }
-            } catch (IOException e) {
-                Log.e("transitService", "Network request failed", e);
-
-                // Increment the attempt counter
-                attempt++;
-
-                // Apply a delay before the next attempt (you can adjust the delay as needed)
-                try {
-                    Thread.sleep(500); // 0.5 second delay
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-            }
-        }
-
-        return null; // Return null if all attempts fail
-    }
-
-
     public int getKey() {
         return key;
     }
@@ -345,6 +292,11 @@ public class BusStop implements Parcelable {
     }
 
     public String getName() {
+        if(nickname != null)
+        {
+            return nickname;
+        }
+
         //Shorten direction strings for readability
         String output = name;
 
@@ -380,5 +332,12 @@ public class BusStop implements Parcelable {
         return busRoutes;
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
+    }
 }
 

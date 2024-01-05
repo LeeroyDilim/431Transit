@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/bus_stop_grid_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/placeholder_image"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/border"
+        android:scaleType="centerCrop"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/bus_stop_grid_name_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bus_stop_grid_image_view"
+        android:layout_alignEnd="@+id/bus_stop_grid_image_view"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:fontFamily="@font/inter_bold"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:gravity="center"
+        tools:text="Bus Stop Name" />
+
+    <TextView
+        android:id="@+id/bus_stop_grid_key_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bus_stop_grid_name_view"
+        android:layout_alignEnd="@+id/bus_stop_grid_name_view"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/subtitle"
+        android:textSize="14sp"
+        android:gravity="center"
+        tools:text="Bus Stop Key" />
+
+</RelativeLayout>

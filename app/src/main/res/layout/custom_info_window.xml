@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@drawable/custom_window_info_bg">
+
+    <TextView
+        android:id="@+id/info_window_bus_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="NB Mandalay at Margate"
+        android:textColor="@color/black"
+        android:textSize="16sp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/info_window_bus_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info_window_bus_name"
+        android:fontFamily="@font/inter_medium"
+        android:text="#30610"
+        android:textColor="@color/subtitle"
+        android:textSize="14sp">
+    </TextView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info_window_bus_name"
+        android:layout_alignEnd="@+id/info_window_bus_name"
+        android:src="@drawable/right_line">
+    </ImageView>
+</RelativeLayout>

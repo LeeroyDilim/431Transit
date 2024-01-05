@@ -4,12 +4,14 @@ import com.example.a431transit.R;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
 import com.example.a431transit.model.bus_route.BadgeStyle;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.Duration;
@@ -18,12 +20,12 @@ public class ArrivalInstance {
     private final String ROUTE_BADGE;
     private final BadgeStyle BADGE_STYLE;
     private final String ROUTE_NAME;
-    private final LocalTime BUS_EXPECTED_ARRIVAL;
-    private final LocalTime BUS_ACTUAL_ARRIVAL;
+    private final LocalDateTime BUS_EXPECTED_ARRIVAL;
+    private final LocalDateTime BUS_ACTUAL_ARRIVAL;
     private String BUS_STATUS;
     private final boolean IS_CANCELLED;
 
-    public ArrivalInstance(String busBadge, BadgeStyle badgeStyle, String busName, LocalTime busExpectedTime, LocalTime busActualTime, boolean isCancelled) {
+    public ArrivalInstance(String busBadge, BadgeStyle badgeStyle, String busName, LocalDateTime busExpectedTime, LocalDateTime busActualTime, boolean isCancelled) {
         this.ROUTE_BADGE = busBadge;
         this.BADGE_STYLE = badgeStyle;
         this.ROUTE_NAME = busName;
@@ -54,10 +56,11 @@ public class ArrivalInstance {
 
     public void loadBusTime(TextView textView) {
         String timeText;
-        LocalTime currentTime = LocalTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
 
         Duration duration = Duration.between(currentTime,BUS_ACTUAL_ARRIVAL);
 
+        Log.i("Arrival Instance", "SCHEDULED TIME: " + BUS_ACTUAL_ARRIVAL + "\nCURRENT TIME: " + currentTime +"\nDURATION: " +duration);
         if(duration.toMinutes() <= 15)
         {
             if(duration.toMinutes() <= 0)
@@ -89,11 +92,11 @@ public class ArrivalInstance {
             status = "CANCELLED";
             colorID = R.color.BAD_STATUS;
         }
-        else if (BUS_EXPECTED_ARRIVAL.isBefore(BUS_ACTUAL_ARRIVAL)) {
+        else if (BUS_ACTUAL_ARRIVAL.isAfter(BUS_EXPECTED_ARRIVAL)) {
             status = "Late";
             colorID = R.color.BAD_STATUS;
 
-        } else if (BUS_EXPECTED_ARRIVAL.isAfter(BUS_ACTUAL_ARRIVAL)) {
+        } else if (BUS_ACTUAL_ARRIVAL.isBefore(BUS_EXPECTED_ARRIVAL)) {
             status = "Early";
             colorID = R.color.CAUTIONARY_STATUS;
         } else {
@@ -107,7 +110,7 @@ public class ArrivalInstance {
         textView.setTextColor(textColor);
     }
 
-    public LocalTime getBusActualArrival() {
+    public LocalDateTime getBusActualArrival() {
         return BUS_ACTUAL_ARRIVAL;
     }
 }

@@ -16,9 +16,9 @@ import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
 import com.example.a431transit.model.TransitResponse;
 import com.example.a431transit.model.stops.BusStop;
-import com.example.a431transit.util.BusStopAdapter;
-import com.example.a431transit.util.BusStopViewInterface;
-import com.example.a431transit.util.TransitAPIService;
+import com.example.a431transit.util.bus_stop_list.BusStopAdapter;
+import com.example.a431transit.util.bus_stop_list.BusStopViewInterface;
+import com.example.a431transit.util.api_communication.TransitAPIService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +29,6 @@ import retrofit2.Response;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
 import android.widget.TextView;
 
 /**
@@ -128,6 +126,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
             call = transitService.searchBusStopsByName(apiUrl, BuildConfig.TRANSIT_API_KEY);
         }
 
+        Log.d("API URL", call.request().url().toString());
         call.enqueue(new Callback<TransitResponse>() {
             @Override
             public void onResponse(Call<TransitResponse> call, Response<TransitResponse> response) {
@@ -199,7 +198,6 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
-        Log.i("Search Fragment", "busStops info: " + busStops.size());
         if(busStops.size() > 0 && position >= 0 & position < busStops.size()) {
             Intent intent = new Intent(getContext(), BusArrivals.class);
 

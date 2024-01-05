@@ -7,12 +7,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.a431transit.R;
 import com.example.a431transit.model.stops.BusStop;
-import com.example.a431transit.util.TransitAPIClient;
-import com.example.a431transit.util.TransitAPIService;
+import com.example.a431transit.util.api_communication.TransitAPIClient;
+import com.example.a431transit.util.api_communication.TransitAPIService;
 import com.example.a431transit.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,9 +35,11 @@ public class MainActivity extends AppCompatActivity {
         MapFragment mapFragment = new MapFragment(transitService);
         SearchFragment searchFragment = new SearchFragment(transitService);
 
-        replaceFragment(savedStopsFragment);
-
         BottomNavigationView bottomNavigationView3 = findViewById(R.id.bottomNavigationView3);
+
+        replaceFragment(savedStopsFragment);
+        bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.saved_stops_icon_filled);
+
         bottomNavigationView3.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
