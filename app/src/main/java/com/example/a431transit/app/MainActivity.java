@@ -19,7 +19,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
+
+    //keep track of the list of bus stops the user searched for in the Search Fragment
     List<BusStop> busStopsList = null;
+
+    //id of currentFragment that is being displayed
     int currentFragment;
 
     @SuppressLint("NonConstantResourceId")
@@ -29,29 +33,39 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_main);
 
+        initComponents();
+    }
+
+    private void initComponents() {
+        //initialize a connection with the WPG Transit API
         TransitAPIService transitService = TransitAPIClient.getApiService();
 
+        //get and init components
         SavedStopsFragment savedStopsFragment = new SavedStopsFragment(transitService);
         SearchFragment searchFragment = new SearchFragment(transitService);
-
         BottomNavigationView bottomNavigationView3 = findViewById(R.id.bottomNavigationView3);
 
+        //On startup, the Saved Stop fragment is displayed
         replaceFragment(savedStopsFragment);
         bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.saved_stops_icon_filled);
 
+        //Once a user has chosen to move to another page from the bottom navigation view, display the appropriate fragment
         bottomNavigationView3.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
+            //Do not do anything if user has clicked to display the fragment already displayed
             if (itemId == currentFragment) {
                 return false;
             }
 
             currentFragment = itemId;
 
+            //If the current fragment was the search page, retrieve the searched list to display once the user comes back
             if (currentFragment == bottomNavigationView3.getMenu().getItem(2).getItemId()) {
                 busStopsList = searchFragment.getBusStops();
             }
 
+            //display the fragment requested by the user
             if (itemId == R.id.saved_stops) {
                 replaceFragment(savedStopsFragment);
 
@@ -68,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
                 bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.search_icon);
             } else if (itemId == R.id.search) {
                 replaceFragment(searchFragment);
+
+                //display the list that was previously searched by the user
                 searchFragment.setBusStops(busStopsList);
 
                 //Update Icons

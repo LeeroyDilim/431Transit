@@ -23,8 +23,9 @@ import java.util.Map;
 public class CategoriesManager {
 
     private static final String CATEGORIES_FILE_NAME = "categories.json";
+    //track the actual instances of bus stops stored in external storage
     private SavedBusStopManager savedBusStopManager;
-    private Map<String, List<String>> categories; // Updated data structure
+    private Map<String, List<String>> categories;
     private Context context;
 
     public CategoriesManager(Context context) {
@@ -43,7 +44,7 @@ public class CategoriesManager {
         return new ArrayList<>(categories.keySet());
     }
 
-    public List<String> getEditableCategories() {
+    public List<String> getUserCreatedCategories() {
         ArrayList<String> output = new ArrayList<>(categories.keySet());
 
         output.remove("Saved");
@@ -51,8 +52,9 @@ public class CategoriesManager {
         return output;
     }
 
+    //given a category, return a list of bus stops that are in that category
     public List<BusStop> getBusStopsFromCategory(String category) {
-        if (!isCategoryExists(category)) {
+        if (!categoryExists(category)) {
             return null;
         }
 
@@ -66,33 +68,31 @@ public class CategoriesManager {
         return busStops;
     }
 
+    //add a given stop to a given category
     public void addStopToCategory(String category, BusStop busStop) {
         if (busStopInCategory(category, busStop)) {
             return;
         }
 
-        //save category in bus stop
+        //save category in bus stop, then save it onto storage
         busStop.addCategory(category);
         savedBusStopManager.addBusStop(busStop);
 
-        //if there is no saved copy of the bus stop in storage, save it
-        if (!savedBusStopManager.isBusStopSaved(busStop)) {
-            savedBusStopManager.addBusStop(busStop);
-        }
-
         //check if category exists, if not add it
-        if (!isCategoryExists(category)) {
+        if (!categoryExists(category)) {
             addCategory(category);
         }
 
-        //save bus stop in category
+        //save bus stop pointer in category
         categories.get(category).add(String.valueOf(busStop.getKey()));
 
+        //update json file
         saveCategoriesToJson();
     }
 
+    //remove a given stop from a given category
     public void removeStopFromCategory(String category, BusStop busStop) {
-        if (!isCategoryExists(category)) {
+        if (!categoryExists(category)) {
             return;
         }
 
@@ -106,8 +106,10 @@ public class CategoriesManager {
             savedBusStopManager.addBusStop(busStop);
         }
 
+        //remove bus stop pointer from category
         categories.get(category).remove(String.valueOf(busStop.getKey()));
 
+        //update json file
         saveCategoriesToJson();
     }
 
@@ -115,6 +117,7 @@ public class CategoriesManager {
         return savedBusStopManager.getBusStop(String.valueOf(busStop.getKey()));
     }
 
+    //replaces a bus stop in storage with an updated version
     public void updateBusStop(BusStop busStop) {
         if (isBusStopSaved(busStop)) {
             savedBusStopManager.addBusStop(busStop);
@@ -122,16 +125,20 @@ public class CategoriesManager {
     }
 
     public void addCategory(String categoryName) {
-        categories.put(categoryName, new ArrayList<>());
-        saveCategoriesToJson();
+        if (!categoryExists(categoryName)) {
+            categories.put(categoryName, new ArrayList<>());
+            saveCategoriesToJson();
+        }
     }
 
     public void removeCategory(String categoryName) {
         if (categories.containsKey(categoryName)) {
+            //for each bus stop in the category, remove that category in the bus stop's category list
             for (String busKey : categories.get(categoryName)) {
                 BusStop currentBusStop = savedBusStopManager.getBusStop(busKey);
                 currentBusStop.removeCategory(categoryName);
 
+                //remove bus stop from storage if not in any category
                 if (currentBusStop.notInAnyCategory()) {
                     savedBusStopManager.removeBusStop(currentBusStop);
                 }
@@ -143,12 +150,12 @@ public class CategoriesManager {
         saveCategoriesToJson();
     }
 
-    public boolean isCategoryExists(String categoryName) {
+    public boolean categoryExists(String categoryName) {
         return categories.containsKey(categoryName);
     }
 
     public boolean busStopInCategory(String categoryName, BusStop busStop) {
-        if (!isCategoryExists(categoryName)) {
+        if (!categoryExists(categoryName)) {
             return false;
         }
 
@@ -159,6 +166,7 @@ public class CategoriesManager {
         return savedBusStopManager.isBusStopSaved(busStop);
     }
 
+    //Load Categories from external storage
     private Map<String, List<String>> loadCategoriesFromJson() {
         Map<String, List<String>> categoriesMap = new LinkedHashMap<>();
 
@@ -188,11 +196,13 @@ public class CategoriesManager {
         return categoriesMap != null ? categoriesMap : new HashMap<>();
     }
 
+    //Save Categories into external storage
     private void saveCategoriesToJson() {
         Gson gson = new Gson();
         String json = gson.toJson(categories);
 
         File file = new File(context.getExternalFilesDir(null), CATEGORIES_FILE_NAME);
+
         try (OutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(json.getBytes());
         } catch (IOException e) {

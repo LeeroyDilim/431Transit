@@ -95,6 +95,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchBorder"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavBorder"
-        android:visibility="gone"></TextView>
+        android:visibility="gone">
+    </TextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

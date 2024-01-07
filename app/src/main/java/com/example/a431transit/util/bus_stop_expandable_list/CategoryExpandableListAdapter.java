@@ -25,7 +25,6 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
     private LayoutInflater layoutInflater;
     private BusStopGridViewItemClickInterface busStopGridViewItemClickListener;
     private TransitAPIService transitAPIService;
-    private final int COLUMN_COUNT = 2;
 
     public CategoryExpandableListAdapter(Context context, List<String> categoryHeaders, HashMap<String, List<BusStop>> categoryChildren,
                                          BusStopGridViewItemClickInterface busStopGridViewItemClickInterface, TransitAPIService transitAPIService) {
@@ -79,6 +78,7 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    //Display category information with its corresponding text view
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String categoryTitle = (String) getGroup(groupPosition);
 
@@ -93,18 +93,24 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    //Display a category's children with its corresponding child view
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         convertView = layoutInflater.inflate(R.layout.expandable_list_item, null);
+
+        //get list of bus stops in this category
         final List<BusStop> items = categoryChildren.get(categoryHeaders.get(groupPosition));
 
         if (items.size() > 0) {
+            int COLUMN_COUNT = 2;
+            int totalHeight = 0;
+
+            //initialize the grid view
             BusStopGridView gridView = (BusStopGridView) convertView.findViewById(R.id.bus_stop_gridView);
             gridView.setNumColumns(COLUMN_COUNT);
 
+            //initialize the adapter
             BusStopGridAdapter adapter = new BusStopGridAdapter(context, items, transitAPIService);
             gridView.setAdapter(adapter);
-
-            int totalHeight = 0;
 
             // This is to get the actual size of gridView at runtime while filling the items into it
             for (int size = 0; size < adapter.getCount(); size++) {
@@ -122,6 +128,7 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
                 }
             }
 
+            //set the height of the grid view according to how many rows there are on the grid
             gridView.setGridViewItemHeight(totalHeight);
 
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

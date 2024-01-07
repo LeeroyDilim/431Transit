@@ -36,6 +36,7 @@ public class SavedBusStopManager {
         busStops = loadBusStopsFromJson();
     }
 
+    //get a bus stop that is stored in storage
     public BusStop getBusStop(String busStopKey) {
         if (busStops.containsKey(busStopKey)) {
             return busStops.get(String.valueOf(busStopKey));
@@ -58,6 +59,7 @@ public class SavedBusStopManager {
         return busStops.containsKey(String.valueOf(busStop.getKey()));
     }
 
+    //load saved bus stops from external storage
     private Map<String, BusStop> loadBusStopsFromJson() {
         Map<String, BusStop> stopsMap = new HashMap<>();
 
@@ -87,6 +89,7 @@ public class SavedBusStopManager {
         return stopsMap != null ? stopsMap : new HashMap<>();
     }
 
+    //save saved bus stops to external storage
     private void saveBusStopsToJson() {
         Gson gson = new Gson();
         String json = gson.toJson(busStops);

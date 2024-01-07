@@ -52,7 +52,7 @@ public class BusStop implements Parcelable {
     private String side;
 
     @SerializedName("isSaved")
-    private boolean isSaved = false;
+    private boolean isSaved;
 
     @SerializedName("centre")
     private Centre centre;
@@ -69,13 +69,12 @@ public class BusStop implements Parcelable {
     @SerializedName("filteredRoutes")
     private List<String> filteredRoutes;
 
-    //store routes both in memory and in the cache
+    //store routes both in memory and in a cache
     private static final LruCache<String, List<BusRoute>> routeCache = new LruCache<>(10 * 1024 * 1024);
     private List<BusRoute> busRoutes;
 
-    //store bus stop images both in memory and in the cache
+    //store bus stop images in a cache
     private static final LruCache<String, Bitmap> imageCache = new LruCache<>(10 * 1024 * 1024);
-    private Bitmap busImage;
 
     protected BusStop(Parcel in) {
         key = in.readInt();
@@ -119,26 +118,32 @@ public class BusStop implements Parcelable {
         }
     };
 
+    //Make an API call to get the current routes that visit the stop
     public void loadBusRoutes(final Context context, TransitAPIService transitService, ViewGroup layout) {
         // Add a counter for retries
         final int[] retryCount = {0};
 
+        //Check if the bus routes are stored in memory
         if (busRoutes != null) {
             updateRouteView(context, busRoutes, layout);
+            return;
         }
 
+        //check if the bus routes are stored in the cache
         List<BusRoute> cachedRoutes = routeCache.get(key + "route");
 
         if (cachedRoutes != null) {
             busRoutes = cachedRoutes;
             updateRouteView(context, busRoutes, layout);
         } else {
+            //make the api call
             Call<TransitResponse> call = transitService.getBusStopRoutes(key, BuildConfig.TRANSIT_API_KEY);
 
             call.enqueue(new Callback<TransitResponse>() {
                 @Override
                 public void onResponse(Call<TransitResponse> call, Response<TransitResponse> response) {
                     if (response.isSuccessful()) {
+                        //extract the data from the api
                         TransitResponse transitResponse = response.body();
 
                         if (transitResponse == null) {
@@ -151,6 +156,7 @@ public class BusStop implements Parcelable {
                             return;
                         }
 
+                        //render each route on to the given layout
                         updateRouteView(context, busRoutes, layout);
                     } else {
                         Log.e("transitService", "Error: " + response.code() + " - " + response.message());
@@ -175,7 +181,9 @@ public class BusStop implements Parcelable {
         }
     }
 
+    //For each bus route, create a text view and insert it into the given layout
     private void updateRouteView(Context context, List<BusRoute> busRoutes, ViewGroup layout) {
+        //remove the previously displayed routes
         layout.removeAllViews();
 
         for (int i = 0; i < busRoutes.size(); i++) {
@@ -200,8 +208,8 @@ public class BusStop implements Parcelable {
                 newText.setLayoutParams(layoutParams);
             }
 
-            if(filteredRoutes != null && !filteredRoutes.contains(busRoute.getKey()))
-            {
+            //If user has chosen to not display a route, make it mostly transparent
+            if (filteredRoutes != null && !filteredRoutes.contains(busRoute.getKey())) {
                 newText.setAlpha(0.35f);
             }
 
@@ -209,10 +217,12 @@ public class BusStop implements Parcelable {
         }
     }
 
+    //Create a text view with the bus route's properties
     private static TextView createRouteTextView(Context context, BusRoute busRoute) {
         LayoutInflater inflater = LayoutInflater.from(context);
         TextView output = (TextView) inflater.inflate(R.layout.bus_route_text_view, null);
 
+        //get the badge style of this route instance
         int backgroundColor = android.graphics.Color.parseColor(busRoute.getBadgeStyle().getBackgroundColor());
         int textColor = android.graphics.Color.parseColor(busRoute.getBadgeStyle().getTextColor());
 
@@ -221,8 +231,8 @@ public class BusStop implements Parcelable {
             backgroundColor = Color.rgb(230, 230, 230);
         }
 
+        //set margins for this text view
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) output.getLayoutParams();
-
         if (layoutParams == null) {
             layoutParams = new ViewGroup.MarginLayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -232,23 +242,23 @@ public class BusStop implements Parcelable {
 
         layoutParams.rightMargin = 20;
         layoutParams.bottomMargin = 20;
-
         output.setLayoutParams(layoutParams);
 
+        //set the attributes for this text view
         output.setId(View.generateViewId());
-
         output.setText(busRoute.getNumber());
         output.setTextColor(textColor);
-
         output.setBackgroundColor(backgroundColor);
 
         return output;
     }
 
+    //Communicate with the Google Static Maps API to fetch an image of the bus stop in google maps
     public void loadImage(final Context context, final ImageView imageView, String shape) {
         //dimensions of image requested
         int width, height, zoom;
 
+        //set the appropriate dimensions for this method call
         if (shape.equals("circle")) {
             width = 300;
             height = 300;
@@ -261,6 +271,7 @@ public class BusStop implements Parcelable {
             return;
         }
 
+        //create the url to send to the google static map api
         String imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
                 "&zoom=" + zoom + "&size=" + width + "x" + height + "&markers=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
                 "&key=" + BuildConfig.GOOGLE_API_KEY;
@@ -282,8 +293,6 @@ public class BusStop implements Parcelable {
                         public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                             // Save the image to the cache
                             imageCache.put(cacheKey, resource);
-
-                            busImage = resource;
 
                             // Set the image to the ImageView
                             imageView.setImageBitmap(resource);
@@ -352,9 +361,12 @@ public class BusStop implements Parcelable {
         isSaved = saved;
     }
 
-    public Boolean inCategory(String category)
-    {
-        return inCategories.contains(category);
+    public Boolean inCategory(String category) {
+        if (inCategories != null) {
+            return inCategories.contains(category);
+        }
+
+        return false;
     }
 
     public Boolean notInAnyCategory() {
@@ -377,7 +389,7 @@ public class BusStop implements Parcelable {
         return inCategories;
     }
 
-    public List<String> getEditableCategories() {
+    public List<String> getUserCategories() {
         List<String> output = null;
 
         if (inCategories != null) {

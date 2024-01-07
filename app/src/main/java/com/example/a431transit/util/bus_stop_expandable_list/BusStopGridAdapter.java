@@ -41,6 +41,7 @@ public class BusStopGridAdapter extends BaseAdapter {
     }
 
     @Override
+    //Display the bus stop's information with it's corresponding viewholder
     public View getView(int position, View convertView, ViewGroup parent) {
         BusStopGridViewHolder holder = null;
         BusStop busStop = busStops.get(position);
@@ -60,9 +61,9 @@ public class BusStopGridAdapter extends BaseAdapter {
             holder = (BusStopGridViewHolder) convertView.getTag();
         }
 
+        //update the view components
         holder.stopNameView.setText(busStop.getName());
         holder.stopKeyView.setText("#" + busStop.getKey());
-
         busStop.loadImage(context, holder.stopImageView, "circle");
 
         return convertView;

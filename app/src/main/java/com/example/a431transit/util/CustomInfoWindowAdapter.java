@@ -21,6 +21,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         viewWindow = LayoutInflater.from(context).inflate(R.layout.custom_info_window, null);
     }
 
+    //Display a bus stop's information onto its corresponding info window
     private void renderWindowText(Marker marker, View view) {
         TextView busName = view.findViewById(R.id.info_window_bus_name);
         TextView busKey = view.findViewById(R.id.info_window_bus_key);

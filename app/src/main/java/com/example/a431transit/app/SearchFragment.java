@@ -31,20 +31,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SearchFragment extends Fragment implements BusStopViewInterface {
+    private TransitAPIService transitService;
+    List<BusStop> busStops; //tracks the results of the most recent search
+
+    //Components that will be referred to in multiple methods
     private SearchView searchView;
     private TextView emptySearchView;
-    private TransitAPIService transitService;
-
     private RecyclerView busStopView;
     private BusStopAdapter busStopAdapter;
-
-    List<BusStop> busStops;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -52,14 +47,6 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
 
     public SearchFragment(TransitAPIService transitService) {
         this.transitService = transitService;
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance() {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -72,6 +59,136 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
+        initComponents(view);
+
+        return view;
+    }
+
+    //Search for bus stops given a user's text input
+    private void searchBusStops(String query) {
+        // Add a counter for retries
+        final int[] retryCount = {0};
+        Call<TransitResponse> call;
+
+        //if user inputs nothing, clear the list
+        if (query.isEmpty()) {
+            busStops = new ArrayList<>();
+            busStopAdapter.updateData(busStops);
+            return;
+        }
+
+        //Check if user is searching by bus stop name or key
+        if (query.matches("\\d+")) {
+            call = transitService.searchBusStopsByKey(Integer.parseInt(query), BuildConfig.TRANSIT_API_KEY);
+        } else if (query.matches("#\\d+")) {
+            //if user searches for a bus key with # at the beginning of the string
+            call = transitService.searchBusStopsByKey(Integer.parseInt(query.substring(1)), BuildConfig.TRANSIT_API_KEY);
+        } else {
+            //Have to do it like this as retrofit does not allow colons in the urls
+            String baseUrl = "https://api.winnipegtransit.com/v3/";
+            String path = "stops:" + query + ".json";
+            String apiUrl = baseUrl + path;
+
+            call = transitService.searchBusStopsByName(apiUrl, BuildConfig.TRANSIT_API_KEY);
+        }
+
+        //make the api call
+        call.enqueue(new Callback<TransitResponse>() {
+            @Override
+            public void onResponse(Call<TransitResponse> call, Response<TransitResponse> response) {
+                if (response.isSuccessful()) {
+                    TransitResponse transitResponse = response.body();
+
+                    //get the data from the API response
+                    busStops = transitResponse.getStops();
+
+                    //searching by key only returns one stop
+                    if (busStops == null) {
+                        busStops = new ArrayList<BusStop>();
+                        busStops.add(transitResponse.getStop());
+                    }
+
+                    //if no stops exist with the searched name, then display text signifying so
+                    //if not update the list with the newly acquired information
+                    if (busStops.isEmpty()) {
+                        emptySearchView.setVisibility(View.VISIBLE);
+                        busStopView.setVisibility(View.GONE);
+                    } else {
+                        emptySearchView.setVisibility(View.GONE);
+                        busStopView.setVisibility(View.VISIBLE);
+
+                        busStopAdapter.updateData(busStops);
+                    }
+                } else {
+                    //signify that there are no bus stops to display with the search
+                    emptySearchView.setVisibility(View.GONE);
+                    busStopView.setVisibility(View.VISIBLE);
+
+                    busStops = new ArrayList<BusStop>();
+                    busStopAdapter.updateData(busStops);
+
+                    //if failure did not come from a user entering a invalid string
+                    if (response.code() != 404) {
+                        Log.e("transitService", "Error: " + response.code() + " - " + response.message());
+                        showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TransitResponse> call, Throwable t) {
+                Log.e("transitService", "Network request failed", t);
+                t.printStackTrace();
+
+                // Retry the request up to three times
+                if (retryCount[0] < 3) {
+                    retryCount[0]++;
+                    Log.i("transitService", "Retrying network request (Retry " + retryCount[0] + ")");
+                    call.clone().enqueue(this);
+                } else {
+                    Log.e("transitService", "Network request failed after three retries");
+                    showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
+
+                    //signify that there are no bus stops to display with the failed search
+                    emptySearchView.setVisibility(View.GONE);
+                    busStopView.setVisibility(View.VISIBLE);
+
+                    busStops = new ArrayList<BusStop>();
+                    busStopAdapter.updateData(busStops);
+                }
+            }
+
+        });
+    }
+
+    //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
+    @Override
+    public void onItemClick(int position) {
+        if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
+            Intent intent = new Intent(getContext(), BusArrivals.class);
+
+            intent.putExtra("BUS_STOP", busStops.get(position));
+
+            startActivity(intent);
+        }
+    }
+
+    public List<BusStop> getBusStops() {
+        return busStops;
+    }
+
+    public void setBusStops(List<BusStop> busStops) {
+        if (busStops == null) {
+            return;
+        }
+
+        this.busStops = busStops;
+
+        //update list with the newly set busStops
+        busStopAdapter.updateData(busStops);
+    }
+
+    private void initComponents(View view) {
         searchView = view.findViewById(R.id.searchView);
         emptySearchView = view.findViewById(R.id.emptySearchView);
 
@@ -94,133 +211,14 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
                 return true;
             }
         });
-
-        return view;
     }
 
-    private void searchBusStops(String query) {
-        // Add a counter for retries
-        final int[] retryCount = {0};
-        Call<TransitResponse> call;
-
-        //if user inputs nothing, clear the list
-        if (query.isEmpty()) {
-            busStops = new ArrayList<>();
-            busStopAdapter.updateData(busStops);
-            return;
-        }
-
-        //Check if user is searching by bus stop name or key
-        if (query.matches("\\d+")) {
-            call = transitService.searchBusStopsByKey(Integer.parseInt(query), BuildConfig.TRANSIT_API_KEY);
-        } else if (query.matches("#\\d+")) {
-            //if user searches bus key with # at the beginning of the string
-            call = transitService.searchBusStopsByKey(Integer.parseInt(query.substring(1)), BuildConfig.TRANSIT_API_KEY);
-        } else {
-            //Have to do it like this as retrofit does not allow colons in the urls
-            String baseUrl = "https://api.winnipegtransit.com/v3/";
-            String path = "stops:" + query + ".json";
-            String apiUrl = baseUrl + path;
-
-            call = transitService.searchBusStopsByName(apiUrl, BuildConfig.TRANSIT_API_KEY);
-        }
-
-        Log.d("API URL", call.request().url().toString());
-        call.enqueue(new Callback<TransitResponse>() {
-            @Override
-            public void onResponse(Call<TransitResponse> call, Response<TransitResponse> response) {
-                if (response.isSuccessful()) {
-                    TransitResponse transitResponse = response.body();
-
-                    busStops = transitResponse.getStops();
-
-                    //searching by key only returns one stop
-                    if (busStops == null) {
-                        busStops = new ArrayList<BusStop>();
-                        busStops.add(transitResponse.getStop());
-                    }
-
-                    //if no stops exist with the searched name
-                    if (busStops.isEmpty()) {
-                        emptySearchView.setVisibility(View.VISIBLE);
-                        busStopView.setVisibility(View.GONE);
-                    } else {
-                        emptySearchView.setVisibility(View.GONE);
-                        busStopView.setVisibility(View.VISIBLE);
-                        busStopAdapter.updateData(busStops);
-                    }
-                } else {
-                    if (response.code() == 404) {
-                        emptySearchView.setVisibility(View.VISIBLE);
-                        busStopView.setVisibility(View.GONE);
-                    } else {
-                        Log.e("transitService", "Error: " + response.code() + " - " + response.message());
-                        showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
-
-                        emptySearchView.setVisibility(View.GONE);
-                        busStopView.setVisibility(View.VISIBLE);
-
-                        busStops = new ArrayList<BusStop>();
-                        busStopAdapter.updateData(busStops);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TransitResponse> call, Throwable t) {
-                Log.e("transitService", "Network request failed", t);
-                t.printStackTrace();
-
-                // Retry the request up to three times
-                if (retryCount[0] < 3) {
-                    retryCount[0]++;
-                    Log.i("transitService", "Retrying network request (Retry " + retryCount[0] + ")");
-                    call.clone().enqueue(this);
-                } else {
-                    Log.e("transitService", "Network request failed after three retries");
-                    showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
-
-                    emptySearchView.setVisibility(View.GONE);
-                    busStopView.setVisibility(View.VISIBLE);
-
-                    busStops = new ArrayList<BusStop>();
-                    busStopAdapter.updateData(busStops);
-                }
-            }
-
-        });
-    }
-
-    //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
-    @Override
-    public void onItemClick(int position) {
-        if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
-            Intent intent = new Intent(getContext(), BusArrivals.class);
-
-            intent.putExtra("BUS_STOP", busStops.get(position));
-            Log.i("Search Fragment", "busStop info: " + busStops.get(position));
-
-            startActivity(intent);
-        }
-    }
 
     @Override
     public void onResume() {
         super.onResume();
 
         searchView.clearFocus();
-    }
-
-    public List<BusStop> getBusStops() {
-        return busStops;
-    }
-
-    public void setBusStops(List<BusStop> busStops) {
-        if (busStops == null) {
-            return;
-        }
-        this.busStops = busStops;
-        busStopAdapter.updateData(busStops);
     }
 
     private void showAlert(Context context, String title, String message) {
@@ -233,4 +231,5 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
 }

@@ -35,7 +35,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="start"
-                android:background="#FFFFFF"
+                android:background="@color/white"
                 android:src="@drawable/live_location_icon"
                 android:layout_marginStart="30dp"
                 android:contentDescription="Current Location" />
@@ -53,7 +53,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
-                android:background="#FFFFFF"
+                android:background="@color/white"
                 android:src="@drawable/refresh_enabled_icon"
                 android:layout_marginEnd="30dp"
                 android:contentDescription="Refresh Location" />
@@ -81,7 +81,8 @@
             android:layout_height="20dp"
             android:src="@drawable/minimize_fill"
             android:scaleType="centerCrop"
-            android:layout_gravity="center|top"></ImageView>
+            android:layout_gravity="center|top">
+        </ImageView>
 
         <TextView
             android:layout_width="wrap_content"
@@ -97,14 +98,16 @@
             android:layout_height="1dp"
             android:background="@color/border"
             android:layout_marginTop="55dp"
-            android:layout_gravity="center|top"></View>
+            android:layout_gravity="center|top">
+        </View>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/MapRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="56dp"
-            android:layout_marginBottom="80dp"></androidx.recyclerview.widget.RecyclerView>
+            android:layout_marginBottom="80dp">
+        </androidx.recyclerview.widget.RecyclerView>
     </FrameLayout>
 
     <View
@@ -114,7 +117,8 @@
         android:layout_above="@+id/bottomNavigationView3"
         android:background="@color/border"
         app:layout_anchor="@id/bottomNavigationView3"
-        app:layout_anchorGravity="top"></View>
+        app:layout_anchorGravity="top">
+    </View>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -137,7 +141,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/menu"
-            tools:visibility="invisible"></com.google.android.material.bottomnavigation.BottomNavigationView>
+            tools:visibility="invisible">
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

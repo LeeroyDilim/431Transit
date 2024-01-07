@@ -29,10 +29,7 @@ public class BusRoute implements Parcelable {
     @SerializedName("badge-style")
     private BadgeStyle badgeStyle;
 
-    // Parcelable implementation
     protected BusRoute(Parcel in) {
-        // Read data from the parcel and initialize your object
-        // Note: You need to read the fields in the same order as you wrote them
         key = in.readValue(Object.class.getClassLoader());
         number = in.readValue(Object.class.getClassLoader());
         customerType = in.readString();
@@ -73,10 +70,13 @@ public class BusRoute implements Parcelable {
         dest.writeTypedList(busRoutes);
     }
 
+    //Return a string containing the key of this route
     public String getKey() {
+        //since the api can return a route with either a string or a float as the key, handle the cases appropriately
         if (key instanceof String) {
             return (String) key;
         } else if (key instanceof Number) {
+            //convert the float into a string with no decimals
             DecimalFormat decimalFormat = new DecimalFormat("0");
             return decimalFormat.format(key);
         }
@@ -84,10 +84,13 @@ public class BusRoute implements Parcelable {
         return null;
     }
 
+    //Return a string containing the number of this route
     public String getNumber() {
+        //since the api can return a route with either a string or a float as the number, handle the cases appropriately
         if (number instanceof String) {
             return (String) number;
         } else if (number instanceof Number) {
+            //convert the float into a string with no decimals
             DecimalFormat decimalFormat = new DecimalFormat("0");
             return decimalFormat.format(number);
         }
@@ -103,10 +106,13 @@ public class BusRoute implements Parcelable {
         return coverage;
     }
 
+    //Return a string containing the number of this route
     public String getBadgeLabel() {
+        //since the api can return a route with either a string or a float as the badge, handle the cases appropriately
         if (badgeLabel instanceof String) {
             return (String) badgeLabel;
         } else if (badgeLabel instanceof Number) {
+            //convert the float into a string with no decimals
             DecimalFormat decimalFormat = new DecimalFormat("0");
             return decimalFormat.format(badgeLabel);
         }

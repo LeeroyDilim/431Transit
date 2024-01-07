@@ -31,7 +31,8 @@
         android:layout_below="@+id/input_dialog_multi_choice"
         android:layout_alignStart="@+id/input_dialog_multi_choice"
         android:fontFamily="@font/inter_medium"
-        android:text="CANCEL"></androidx.appcompat.widget.AppCompatButton>
+        android:text="CANCEL">
+    </androidx.appcompat.widget.AppCompatButton>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/input_dialog_submit_btn"
@@ -42,5 +43,6 @@
         android:backgroundTint="@color/navy"
         android:fontFamily="@font/inter_medium"
         android:textColor="@color/white"
-        android:text="SUBMIT"></androidx.appcompat.widget.AppCompatButton>
+        android:text="SUBMIT">
+    </androidx.appcompat.widget.AppCompatButton>
 </RelativeLayout>

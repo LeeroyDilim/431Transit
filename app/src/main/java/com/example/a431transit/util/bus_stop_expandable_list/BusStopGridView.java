@@ -16,10 +16,12 @@ public class BusStopGridView extends GridView {
 
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
         int desiredWidth = 100;
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int width;
+
         // Measure Width
         if (widthMode == MeasureSpec.EXACTLY) {
             // Must be this size
@@ -30,6 +32,7 @@ public class BusStopGridView extends GridView {
         } else { // Be whatever you want
             width = desiredWidth;
         }
+
         // MUST CALL THIS
         setMeasuredDimension(width, mHeight);
         setNumColumns(2);

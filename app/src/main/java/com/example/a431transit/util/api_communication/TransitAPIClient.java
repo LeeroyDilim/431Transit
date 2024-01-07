@@ -24,9 +24,9 @@ public class TransitAPIClient {
     private static Retrofit getRetrofit() {
         if (retrofit == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .connectTimeout(2, TimeUnit.SECONDS) // Set the connection timeout
-                    .readTimeout(2, TimeUnit.SECONDS)    // Set the read timeout
-                    .writeTimeout(2, TimeUnit.SECONDS)   // Set the write timeout
+                    .connectTimeout(2, TimeUnit.SECONDS)
+                    .readTimeout(2, TimeUnit.SECONDS)
+                    .writeTimeout(2, TimeUnit.SECONDS)
                     .build();
 
             retrofit = new Retrofit.Builder()

@@ -35,6 +35,7 @@ public class BusArrivalAdapter extends RecyclerView.Adapter<BusArrivalAdapter.Bu
     }
 
     @Override
+    //Display an arrival instance's information with its corresponding view holder
     public void onBindViewHolder(@NonNull BusArrivalViewHolder holder, int position) {
         ArrivalInstance currentArrivalInstance = arrivalInstances.get(position);
 
@@ -43,6 +44,7 @@ public class BusArrivalAdapter extends RecyclerView.Adapter<BusArrivalAdapter.Bu
         currentArrivalInstance.loadBusTime(holder.busArrivalTimeView);
         currentArrivalInstance.loadBusStatus(context, holder.busStatusView);
 
+        //set a listener so that it shows the full name of a route on click.
         holder.routeNameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

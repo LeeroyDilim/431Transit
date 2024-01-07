@@ -49,46 +49,41 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
     }
 
     @Override
+    //Display the bus stop's information with it's corresponding view holder
     public void onBindViewHolder(@NonNull BusStopViewHolder holder, int position) {
         BusStop currentBusStop = busStops.get(position);
-        // Check for null values
-        if (currentBusStop != null) {
-            String busName = currentBusStop.getName();
-            int busKey = currentBusStop.getKey(); // Assuming busKey is an int
 
-            // Check for null or empty strings
-            if (busName != null && !busName.isEmpty()) {
-                holder.busNameView.setText(busName);
-            } else {
-                holder.busNameView.setText("Default Name"); // Provide a default value or handle as needed
+        String busName = currentBusStop.getName();
+        int busKey = currentBusStop.getKey(); // Assuming busKey is an int
+
+        holder.busNameView.setText(busName);
+
+        // Convert busKey to String before setting it to TextView
+        holder.busKeyView.setText("#" + busKey);
+
+        //load bus stop image and display it
+        currentBusStop.loadImage(context, holder.imageView, "circle");
+
+        //display the routes that stop at this stop
+        flexboxLayout = holder.busRouteView;
+        currentBusStop.loadBusRoutes(context, transitService, flexboxLayout);
+
+        // Add a ViewTreeObserver to get the dimensions after the layout pass
+        holder.itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                // Remove the listener to avoid continuous callbacks
+                holder.itemView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                //set min height so that it fills the rest of the space available
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.constraintLayout.getLayoutParams();
+                holder.constraintLayout.setMinHeight(holder.imageView.getHeight() - holder.busNameView.getHeight() - holder.busKeyView.getHeight() - layoutParams.topMargin);
+
+                return true;
             }
-
-            // Convert busKey to String before setting it to TextView
-            holder.busKeyView.setText("#" + busKey);
-
-            //load bus stop image and display it
-            currentBusStop.loadImage(context, holder.imageView, "circle");
-
-            //display the routes that stop at this stop
-            flexboxLayout = holder.busRouteView;
-            currentBusStop.loadBusRoutes(context, transitService, flexboxLayout);
-
-            // Add a ViewTreeObserver to get the dimensions after the layout pass
-            holder.itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    // Remove the listener to avoid continuous callbacks
-                    holder.itemView.getViewTreeObserver().removeOnPreDrawListener(this);
-
-                    //set min height so that it fills the rest of the space available
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.constraintLayout.getLayoutParams();
-                    holder.constraintLayout.setMinHeight(holder.imageView.getHeight() - holder.busNameView.getHeight() - holder.busKeyView.getHeight() - layoutParams.topMargin);
-
-                    return true;
-                }
-            });
-        }
+        });
     }
+
 
     @Override
     public int getItemCount() {
