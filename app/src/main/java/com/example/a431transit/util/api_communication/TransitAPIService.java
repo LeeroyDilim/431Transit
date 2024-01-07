@@ -10,10 +10,13 @@ import retrofit2.http.Url;
 
 public interface TransitAPIService {
     String BASE_URL = "https://api.winnipegtransit.com/v3/";
+
     @GET
     Call<TransitResponse> searchBusStopsByName(@Url String url, @Query("api-key") String apiKey);
+
     @GET("stops/{stopKey}.json")
     Call<TransitResponse> searchBusStopsByKey(@Path("stopKey") int stopKey, @Query("api-key") String apiKey);
+
     @GET("routes.json")
     Call<TransitResponse> getBusStopRoutes(@Query("stop") int stop, @Query("api-key") String apiKey);
 
@@ -21,5 +24,5 @@ public interface TransitAPIService {
     Call<TransitResponse> getBusStopArrivals(@Path("stopKey") int stopKey, @Query("api-key") String apiKey);
 
     @GET("stops.json")
-    Call <TransitResponse> getBusStopsByLocation(@Query("distance") int searchRadius, @Query("lat") double lat, @Query("lon") double lon, @Query("api-key") String apiKey);
+    Call<TransitResponse> getBusStopsByLocation(@Query("distance") int searchRadius, @Query("lat") double lat, @Query("lon") double lon, @Query("api-key") String apiKey);
 }

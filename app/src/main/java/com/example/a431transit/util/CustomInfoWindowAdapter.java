@@ -12,17 +12,16 @@ import com.example.a431transit.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
+public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private final View viewWindow;
     private Context context;
 
     public CustomInfoWindowAdapter(Context context) {
         this.context = context;
-        viewWindow = LayoutInflater.from(context).inflate(R.layout.custom_info_window,null);
+        viewWindow = LayoutInflater.from(context).inflate(R.layout.custom_info_window, null);
     }
 
-    private void renderWindowText(Marker marker, View view)
-    {
+    private void renderWindowText(Marker marker, View view) {
         TextView busName = view.findViewById(R.id.info_window_bus_name);
         TextView busKey = view.findViewById(R.id.info_window_bus_key);
 

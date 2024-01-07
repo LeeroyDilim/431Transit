@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         TransitAPIService transitService = TransitAPIClient.getApiService();
 
         SavedStopsFragment savedStopsFragment = new SavedStopsFragment(transitService);
-        MapFragment mapFragment = new MapFragment(transitService);
         SearchFragment searchFragment = new SearchFragment(transitService);
 
         BottomNavigationView bottomNavigationView3 = findViewById(R.id.bottomNavigationView3);
@@ -43,19 +42,17 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView3.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if(itemId == currentFragment)
-            {
+            if (itemId == currentFragment) {
                 return false;
             }
 
             currentFragment = itemId;
 
-            if (currentFragment == bottomNavigationView3.getMenu().getItem(2).getItemId())
-            {
+            if (currentFragment == bottomNavigationView3.getMenu().getItem(2).getItemId()) {
                 busStopsList = searchFragment.getBusStops();
             }
 
-            if(itemId == R.id.saved_stops){
+            if (itemId == R.id.saved_stops) {
                 replaceFragment(savedStopsFragment);
 
                 //Update Icons
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 bottomNavigationView3.getMenu().getItem(1).setIcon(R.drawable.map_icon);
                 bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.search_icon);
             } else if (itemId == R.id.map) {
-                replaceFragment(mapFragment);
+                replaceFragment(new MapFragment(transitService));
 
                 //Update Icons
                 item.setIcon(R.drawable.map_icon_filled);
@@ -72,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.search) {
                 replaceFragment(searchFragment);
                 searchFragment.setBusStops(busStopsList);
+
                 //Update Icons
                 item.setIcon(R.drawable.search_icon_filled);
                 bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.saved_stops_icon);
@@ -82,8 +80,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void replaceFragment(Fragment fragment)
-    {
+    private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);

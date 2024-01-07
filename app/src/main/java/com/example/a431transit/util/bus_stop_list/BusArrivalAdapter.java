@@ -31,7 +31,7 @@ public class BusArrivalAdapter extends RecyclerView.Adapter<BusArrivalAdapter.Bu
     @NonNull
     @Override
     public BusArrivalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new BusArrivalViewHolder(LayoutInflater.from(context).inflate(R.layout.bus_arrival_view,parent,false));
+        return new BusArrivalViewHolder(LayoutInflater.from(context).inflate(R.layout.bus_arrival_view, parent, false));
     }
 
     @Override
@@ -42,10 +42,20 @@ public class BusArrivalAdapter extends RecyclerView.Adapter<BusArrivalAdapter.Bu
         currentArrivalInstance.loadRouteName(holder.routeNameView);
         currentArrivalInstance.loadBusTime(holder.busArrivalTimeView);
         currentArrivalInstance.loadBusStatus(context, holder.busStatusView);
+
+        holder.routeNameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.routeNameView.getMaxLines() == 2) {
+                    holder.routeNameView.setMaxLines(Integer.MAX_VALUE);
+                } else {
+                    holder.routeNameView.setMaxLines(2);
+                }
+            }
+        });
     }
 
-    public void updateData(List<ArrivalInstance> arrivalInstances)
-    {
+    public void updateData(List<ArrivalInstance> arrivalInstances) {
         this.arrivalInstances = arrivalInstances;
         notifyDataSetChanged();
     }
@@ -54,7 +64,7 @@ public class BusArrivalAdapter extends RecyclerView.Adapter<BusArrivalAdapter.Bu
     public int getItemCount() {
         if (arrivalInstances != null)
             return arrivalInstances.size();
-        else{
+        else {
             return 0;
         }
 

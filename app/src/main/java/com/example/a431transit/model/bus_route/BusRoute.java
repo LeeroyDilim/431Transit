@@ -4,8 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.a431transit.model.bus_route.BadgeStyle;
 import com.google.gson.annotations.SerializedName;
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -71,12 +74,9 @@ public class BusRoute implements Parcelable {
     }
 
     public String getKey() {
-        if(key instanceof String)
-        {
+        if (key instanceof String) {
             return (String) key;
-        }
-        else if (key instanceof Number)
-        {
+        } else if (key instanceof Number) {
             DecimalFormat decimalFormat = new DecimalFormat("0");
             return decimalFormat.format(key);
         }
@@ -85,12 +85,9 @@ public class BusRoute implements Parcelable {
     }
 
     public String getNumber() {
-        if(number instanceof String)
-        {
+        if (number instanceof String) {
             return (String) number;
-        }
-        else if (number instanceof Number)
-        {
+        } else if (number instanceof Number) {
             DecimalFormat decimalFormat = new DecimalFormat("0");
             return decimalFormat.format(number);
         }
@@ -107,12 +104,9 @@ public class BusRoute implements Parcelable {
     }
 
     public String getBadgeLabel() {
-        if(badgeLabel instanceof String)
-        {
+        if (badgeLabel instanceof String) {
             return (String) badgeLabel;
-        }
-        else if (badgeLabel instanceof Number)
-        {
+        } else if (badgeLabel instanceof Number) {
             DecimalFormat decimalFormat = new DecimalFormat("0");
             return decimalFormat.format(badgeLabel);
         }
@@ -126,8 +120,7 @@ public class BusRoute implements Parcelable {
 
     public String getName() {
         //BLUE Routes do not have a name :(
-        if(name == null)
-        {
+        if (name == null) {
             return getKey();
         }
 
@@ -139,5 +132,11 @@ public class BusRoute implements Parcelable {
         } else {
             return name;
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getKey();
     }
 }

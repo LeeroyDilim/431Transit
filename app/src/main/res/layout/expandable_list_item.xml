@@ -7,7 +7,6 @@
     <com.example.a431transit.util.bus_stop_expandable_list.BusStopGridView
         android:id="@+id/bus_stop_gridView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-    </com.example.a431transit.util.bus_stop_expandable_list.BusStopGridView>
+        android:layout_height="wrap_content"></com.example.a431transit.util.bus_stop_expandable_list.BusStopGridView>
 
 </LinearLayout>

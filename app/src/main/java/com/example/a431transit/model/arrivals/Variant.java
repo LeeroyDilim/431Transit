@@ -1,4 +1,5 @@
 package com.example.a431transit.model.arrivals;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Variant {

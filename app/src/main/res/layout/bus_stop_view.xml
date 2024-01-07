@@ -16,8 +16,7 @@
         android:layout_marginStart="15dp"
         app:civ_border_width="1dp"
         app:civ_border_color="@color/border"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/bus_stop_text_view"
@@ -49,8 +48,7 @@
         android:minHeight="57dp"
         android:layout_marginEnd="25dp"
         android:layout_below="@+id/bus_stop_key_view"
-        android:layout_toEndOf="@+id/bus_stop_image_view"
-        >
+        android:layout_toEndOf="@+id/bus_stop_image_view">
 
         <!-- FlexboxLayout -->
         <com.google.android.flexbox.FlexboxLayout

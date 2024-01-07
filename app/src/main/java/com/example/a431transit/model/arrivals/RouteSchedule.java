@@ -1,4 +1,5 @@
 package com.example.a431transit.model.arrivals;
+
 import com.example.a431transit.model.bus_route.BusRoute;
 import com.google.gson.annotations.SerializedName;
 

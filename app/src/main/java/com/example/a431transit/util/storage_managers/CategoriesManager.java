@@ -2,7 +2,6 @@ package com.example.a431transit.util.storage_managers;
 
 import android.content.Context;
 
-import com.example.a431transit.model.arrivals.Bus;
 import com.example.a431transit.model.stops.BusStop;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,6 +16,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,56 +34,76 @@ public class CategoriesManager {
     }
 
     //if json is changed, then make sure this is reading the most recent json version
-    public void update()
-    {
+    public void update() {
         categories = loadCategoriesFromJson();
         savedBusStopManager.update();
     }
 
-    public List<String> getCategories() {
+    public List<String> getAllCategories() {
         return new ArrayList<>(categories.keySet());
     }
 
-    public List<BusStop> getBusStopsFromCategory(String category)
-    {
-        if(!isCategoryExists(category))
-        {
+    public List<String> getEditableCategories() {
+        ArrayList<String> output = new ArrayList<>(categories.keySet());
+
+        output.remove("Saved");
+
+        return output;
+    }
+
+    public List<BusStop> getBusStopsFromCategory(String category) {
+        if (!isCategoryExists(category)) {
             return null;
         }
 
         List<BusStop> busStops = new ArrayList<>();
         List<String> listOfBusStopKeys = categories.get(category);
 
-        for(String busStopKey : listOfBusStopKeys)
-        {
+        for (String busStopKey : listOfBusStopKeys) {
             busStops.add(savedBusStopManager.getBusStop(busStopKey));
         }
 
         return busStops;
     }
 
-    public void addStopToCategory(String category, BusStop busStop)
-    {
-        if(!savedBusStopManager.isBusStopSaved(busStop))
-        {
+    public void addStopToCategory(String category, BusStop busStop) {
+        if (busStopInCategory(category, busStop)) {
+            return;
+        }
+
+        //save category in bus stop
+        busStop.addCategory(category);
+        savedBusStopManager.addBusStop(busStop);
+
+        //if there is no saved copy of the bus stop in storage, save it
+        if (!savedBusStopManager.isBusStopSaved(busStop)) {
             savedBusStopManager.addBusStop(busStop);
         }
 
-        if(!isCategoryExists(category))
-        {
+        //check if category exists, if not add it
+        if (!isCategoryExists(category)) {
             addCategory(category);
         }
 
+        //save bus stop in category
         categories.get(category).add(String.valueOf(busStop.getKey()));
 
         saveCategoriesToJson();
     }
 
-    public void removeStopFromCategory(String category, BusStop busStop)
-    {
-        if(!isCategoryExists(category))
-        {
+    public void removeStopFromCategory(String category, BusStop busStop) {
+        if (!isCategoryExists(category)) {
             return;
+        }
+
+        //remove category in bus stop's category list and update the json file
+        busStop.removeCategory(category);
+
+        //if bus stop is not in any category, remove it from storage
+        if (busStop.notInAnyCategory()) {
+            savedBusStopManager.removeBusStop(busStop);
+        } else {
+            savedBusStopManager.addBusStop(busStop);
         }
 
         categories.get(category).remove(String.valueOf(busStop.getKey()));
@@ -91,9 +111,14 @@ public class CategoriesManager {
         saveCategoriesToJson();
     }
 
-    public BusStop getBusStop(BusStop busStop)
-    {
+    public BusStop getBusStop(BusStop busStop) {
         return savedBusStopManager.getBusStop(String.valueOf(busStop.getKey()));
+    }
+
+    public void updateBusStop(BusStop busStop) {
+        if (isBusStopSaved(busStop)) {
+            savedBusStopManager.addBusStop(busStop);
+        }
     }
 
     public void addCategory(String categoryName) {
@@ -102,7 +127,19 @@ public class CategoriesManager {
     }
 
     public void removeCategory(String categoryName) {
+        if (categories.containsKey(categoryName)) {
+            for (String busKey : categories.get(categoryName)) {
+                BusStop currentBusStop = savedBusStopManager.getBusStop(busKey);
+                currentBusStop.removeCategory(categoryName);
+
+                if (currentBusStop.notInAnyCategory()) {
+                    savedBusStopManager.removeBusStop(currentBusStop);
+                }
+            }
+        }
+
         categories.remove(categoryName);
+
         saveCategoriesToJson();
     }
 
@@ -110,12 +147,20 @@ public class CategoriesManager {
         return categories.containsKey(categoryName);
     }
 
+    public boolean busStopInCategory(String categoryName, BusStop busStop) {
+        if (!isCategoryExists(categoryName)) {
+            return false;
+        }
+
+        return categories.get(categoryName).contains(String.valueOf(busStop.getKey()));
+    }
+
     public boolean isBusStopSaved(BusStop busStop) {
         return savedBusStopManager.isBusStopSaved(busStop);
     }
 
     private Map<String, List<String>> loadCategoriesFromJson() {
-        Map<String, List<String>> categoriesMap = new HashMap<>();
+        Map<String, List<String>> categoriesMap = new LinkedHashMap<>();
 
         try {
             File file = new File(context.getExternalFilesDir(null), CATEGORIES_FILE_NAME);
@@ -131,7 +176,8 @@ public class CategoriesManager {
                 reader.close();
 
                 // Use Gson.fromJson with the read string
-                Type mapType = new TypeToken<Map<String, List<String>>>() {}.getType();
+                Type mapType = new TypeToken<Map<String, List<String>>>() {
+                }.getType();
                 Gson gson = new GsonBuilder().setLenient().create();
                 categoriesMap = gson.fromJson(jsonString.toString(), mapType);
             }

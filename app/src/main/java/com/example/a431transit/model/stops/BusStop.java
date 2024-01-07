@@ -25,6 +25,7 @@ import com.example.a431transit.model.bus_route.BusRoute;
 import com.example.a431transit.util.api_communication.TransitAPIService;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,12 +63,18 @@ public class BusStop implements Parcelable {
     @SerializedName("cross-street")
     private CrossStreet crossStreet;
 
+    @SerializedName("in-categories")
+    private List<String> inCategories;
+
+    @SerializedName("filteredRoutes")
+    private List<String> filteredRoutes;
+
     //store routes both in memory and in the cache
-    private static final LruCache<String, List<BusRoute>> routeCache = new LruCache<>(5 * 1024 * 1024);
+    private static final LruCache<String, List<BusRoute>> routeCache = new LruCache<>(10 * 1024 * 1024);
     private List<BusRoute> busRoutes;
 
     //store bus stop images both in memory and in the cache
-    private static final LruCache<String, Bitmap> imageCache = new LruCache<>(5 * 1024 * 1024);
+    private static final LruCache<String, Bitmap> imageCache = new LruCache<>(10 * 1024 * 1024);
     private Bitmap busImage;
 
     protected BusStop(Parcel in) {
@@ -116,8 +123,7 @@ public class BusStop implements Parcelable {
         // Add a counter for retries
         final int[] retryCount = {0};
 
-        if(busRoutes != null)
-        {
+        if (busRoutes != null) {
             updateRouteView(context, busRoutes, layout);
         }
 
@@ -135,14 +141,13 @@ public class BusStop implements Parcelable {
                     if (response.isSuccessful()) {
                         TransitResponse transitResponse = response.body();
 
-                        if(transitResponse == null )
-                        {
+                        if (transitResponse == null) {
                             return;
                         }
 
                         busRoutes = transitResponse.getBusRoutes();
 
-                        if(busRoutes == null) {
+                        if (busRoutes == null) {
                             return;
                         }
 
@@ -170,15 +175,15 @@ public class BusStop implements Parcelable {
         }
     }
 
-    private static void updateRouteView(Context context, List<BusRoute> busRoutes, ViewGroup layout)
-    {
+    private void updateRouteView(Context context, List<BusRoute> busRoutes, ViewGroup layout) {
         layout.removeAllViews();
 
         for (int i = 0; i < busRoutes.size(); i++) {
             BusRoute busRoute = busRoutes.get(i);
+
             TextView newText = createRouteTextView(context, busRoute);
 
-            //remove right margin so it aligns nicely
+            //remove right margin of the last text view so it aligns nicely
             if (i == busRoutes.size() - 1) {
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) newText.getLayoutParams();
 
@@ -195,6 +200,11 @@ public class BusStop implements Parcelable {
                 newText.setLayoutParams(layoutParams);
             }
 
+            if(filteredRoutes != null && !filteredRoutes.contains(busRoute.getKey()))
+            {
+                newText.setAlpha(0.35f);
+            }
+
             layout.addView(newText);
         }
     }
@@ -207,8 +217,7 @@ public class BusStop implements Parcelable {
         int textColor = android.graphics.Color.parseColor(busRoute.getBadgeStyle().getTextColor());
 
         //replace standard badge-style colours with colours that are easier on the eyes
-        if(backgroundColor == Color.WHITE)
-        {
+        if (backgroundColor == Color.WHITE) {
             backgroundColor = Color.rgb(230, 230, 230);
         }
 
@@ -240,7 +249,7 @@ public class BusStop implements Parcelable {
         //dimensions of image requested
         int width, height, zoom;
 
-        if(shape.equals("circle")) {
+        if (shape.equals("circle")) {
             width = 300;
             height = 300;
             zoom = 18;
@@ -253,7 +262,7 @@ public class BusStop implements Parcelable {
         }
 
         String imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
-                "&zoom="+zoom+"&size="+width+"x"+height+"&markers=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
+                "&zoom=" + zoom + "&size=" + width + "x" + height + "&markers=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
                 "&key=" + BuildConfig.GOOGLE_API_KEY;
 
         // Check if the image is already in the cache
@@ -292,11 +301,14 @@ public class BusStop implements Parcelable {
     }
 
     public String getName() {
-        if(nickname != null)
-        {
+        if (nickname != null) {
             return nickname;
         }
 
+        return getOriginalName();
+    }
+
+    public String getOriginalName() {
         //Shorten direction strings for readability
         String output = name;
 
@@ -338,6 +350,62 @@ public class BusStop implements Parcelable {
 
     public void setSaved(boolean saved) {
         isSaved = saved;
+    }
+
+    public Boolean inCategory(String category)
+    {
+        return inCategories.contains(category);
+    }
+
+    public Boolean notInAnyCategory() {
+        if (inCategories != null) {
+            return inCategories.isEmpty();
+        }
+
+        return false;
+    }
+
+    public void addCategory(String category) {
+        if (inCategories == null) {
+            inCategories = new ArrayList<>();
+        }
+
+        inCategories.add(category);
+    }
+
+    public List<String> getCategories() {
+        return inCategories;
+    }
+
+    public List<String> getEditableCategories() {
+        List<String> output = null;
+
+        if (inCategories != null) {
+            output = new ArrayList<>(inCategories);
+            output.remove("Saved");
+        }
+
+        return output;
+    }
+
+    public void removeCategory(String category) {
+        if (inCategories != null) {
+            inCategories.remove(category);
+        }
+    }
+
+    public List<String> getFilteredRoutes() {
+        return filteredRoutes;
+    }
+
+    public void setFilteredRoutes(List<String> filteredRoutes) {
+        this.filteredRoutes = filteredRoutes;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.valueOf(key);
     }
 }
 

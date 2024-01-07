@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="15dp"
+    android:background="@drawable/custom_window_info_bg"
+    android:layout_marginHorizontal="50dp">
+
+    <TextView
+        android:id="@+id/input_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_bold"
+        android:paddingHorizontal="5dp"
+        android:text="Enter bus stop name:"
+        android:textSize="17sp" />
+
+    <ListView
+        android:id="@+id/input_dialog_multi_choice"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_below="@id/input_dialog_title"
+        android:layout_marginVertical="10dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/input_dialog_cancel_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_dialog_multi_choice"
+        android:layout_alignStart="@+id/input_dialog_multi_choice"
+        android:fontFamily="@font/inter_medium"
+        android:text="CANCEL"></androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/input_dialog_submit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_dialog_multi_choice"
+        android:layout_alignEnd="@+id/input_dialog_multi_choice"
+        android:backgroundTint="@color/navy"
+        android:fontFamily="@font/inter_medium"
+        android:textColor="@color/white"
+        android:text="SUBMIT"></androidx.appcompat.widget.AppCompatButton>
+</RelativeLayout>

@@ -4,6 +4,7 @@ import com.example.a431transit.model.arrivals.StopSchedule;
 import com.example.a431transit.model.bus_route.BusRoute;
 import com.example.a431transit.model.stops.BusStop;
 import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class TransitResponse {

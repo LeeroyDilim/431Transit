@@ -39,8 +39,7 @@ public class ArrivalInstance {
         int textColor = android.graphics.Color.parseColor(BADGE_STYLE.getTextColor());
 
         //replace standard badge-style colours with colours that are easier on the eyes
-        if(backgroundColor == Color.WHITE)
-        {
+        if (backgroundColor == Color.WHITE) {
             backgroundColor = Color.rgb(230, 230, 230);
         }
 
@@ -58,21 +57,16 @@ public class ArrivalInstance {
         String timeText;
         LocalDateTime currentTime = LocalDateTime.now();
 
-        Duration duration = Duration.between(currentTime,BUS_ACTUAL_ARRIVAL);
+        Duration duration = Duration.between(currentTime, BUS_ACTUAL_ARRIVAL);
 
-        Log.i("Arrival Instance", "SCHEDULED TIME: " + BUS_ACTUAL_ARRIVAL + "\nCURRENT TIME: " + currentTime +"\nDURATION: " +duration);
-        if(duration.toMinutes() <= 15)
-        {
-            if(duration.toMinutes() <= 0)
-            {
+        Log.i("Arrival Instance", "SCHEDULED TIME: " + BUS_ACTUAL_ARRIVAL + "\nCURRENT TIME: " + currentTime + "\nDURATION: " + duration);
+        if (duration.toMinutes() <= 15) {
+            if (duration.toMinutes() <= 0) {
                 timeText = "Due";
-            }
-            else
-            {
+            } else {
                 timeText = duration.toMinutes() + " min";
             }
-        }
-        else {
+        } else {
             //convert LocalTime variable to a string format: 8:45 pm
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
@@ -87,12 +81,10 @@ public class ArrivalInstance {
         int colorID;
         int textColor;
 
-        if(IS_CANCELLED)
-        {
+        if (IS_CANCELLED) {
             status = "CANCELLED";
             colorID = R.color.BAD_STATUS;
-        }
-        else if (BUS_ACTUAL_ARRIVAL.isAfter(BUS_EXPECTED_ARRIVAL)) {
+        } else if (BUS_ACTUAL_ARRIVAL.isAfter(BUS_EXPECTED_ARRIVAL)) {
             status = "Late";
             colorID = R.color.BAD_STATUS;
 

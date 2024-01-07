@@ -44,13 +44,14 @@ public class BusStopGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         BusStopGridViewHolder holder = null;
         BusStop busStop = busStops.get(position);
+
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.bus_stop_grid_view, parent, false);
 
             holder = new BusStopGridViewHolder();
-            holder.stopNameView = (TextView) convertView.findViewById(R.id.bus_stop_grid_name_view );
+            holder.stopNameView = (TextView) convertView.findViewById(R.id.bus_stop_grid_name_view);
             holder.stopKeyView = (TextView) convertView.findViewById(R.id.bus_stop_grid_key_view);
             holder.stopImageView = (ImageView) convertView.findViewById(R.id.bus_stop_grid_image_view);
 
@@ -62,14 +63,12 @@ public class BusStopGridAdapter extends BaseAdapter {
         holder.stopNameView.setText(busStop.getName());
         holder.stopKeyView.setText("#" + busStop.getKey());
 
-        busStop.loadImage(context,holder.stopImageView,"circle");
-
+        busStop.loadImage(context, holder.stopImageView, "circle");
 
         return convertView;
     }
 
-    private static class BusStopGridViewHolder
-    {
+    private static class BusStopGridViewHolder {
         TextView stopNameView;
         TextView stopKeyView;
         ImageView stopImageView;

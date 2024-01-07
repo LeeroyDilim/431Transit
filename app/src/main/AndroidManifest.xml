@@ -15,9 +15,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme._431Transit"
-        >
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="${GOOGLE_API_KEY}"/>
+        android:theme="@style/Theme._431Transit">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_API_KEY}" />
+
         <activity
             android:name=".app.BusArrivals"
             android:exported="false" />

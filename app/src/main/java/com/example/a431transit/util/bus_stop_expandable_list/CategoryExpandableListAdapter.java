@@ -28,8 +28,7 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
     private final int COLUMN_COUNT = 2;
 
     public CategoryExpandableListAdapter(Context context, List<String> categoryHeaders, HashMap<String, List<BusStop>> categoryChildren,
-                                         BusStopGridViewItemClickInterface busStopGridViewItemClickInterface, TransitAPIService transitAPIService)
-    {
+                                         BusStopGridViewItemClickInterface busStopGridViewItemClickInterface, TransitAPIService transitAPIService) {
         this.context = context;
         this.categoryHeaders = categoryHeaders;
         this.categoryChildren = categoryChildren;
@@ -37,13 +36,13 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
         this.layoutInflater = LayoutInflater.from(context);
         this.transitAPIService = transitAPIService;
     }
+
     @Override
     public int getGroupCount() {
         return categoryHeaders.size();
     }
 
-    public void setData(List<String> categoryHeaders, HashMap<String, List<BusStop>> categoryChildren)
-    {
+    public void setData(List<String> categoryHeaders, HashMap<String, List<BusStop>> categoryChildren) {
         this.categoryHeaders = categoryHeaders;
         this.categoryChildren = categoryChildren;
         notifyDataSetChanged();
@@ -83,9 +82,8 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String categoryTitle = (String) getGroup(groupPosition);
 
-        if(convertView == null)
-        {
-            convertView = layoutInflater.inflate((R.layout.expandable_list_header),null);
+        if (convertView == null) {
+            convertView = layoutInflater.inflate((R.layout.expandable_list_header), null);
         }
 
         TextView categoryNameView = convertView.findViewById(R.id.expandable_list_header_name);
@@ -113,8 +111,7 @@ public class CategoryExpandableListAdapter extends BaseExpandableListAdapter {
                 RelativeLayout relativeLayout = (RelativeLayout) adapter.getView(size, null, gridView);
                 relativeLayout.measure(0, 0);
 
-                //will fix this later!
-                int itemHeight = relativeLayout.getMeasuredHeight() + 50; //this method is not completely accurate
+                int itemHeight = relativeLayout.getMeasuredHeight();
 
                 if (size % COLUMN_COUNT == 0) {
                     // New row starts, add the height of the first item

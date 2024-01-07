@@ -104,8 +104,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         Call<TransitResponse> call;
 
         //if user inputs nothing, clear the list
-        if(query.isEmpty())
-        {
+        if (query.isEmpty()) {
             busStops = new ArrayList<>();
             busStopAdapter.updateData(busStops);
             return;
@@ -114,7 +113,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         //Check if user is searching by bus stop name or key
         if (query.matches("\\d+")) {
             call = transitService.searchBusStopsByKey(Integer.parseInt(query), BuildConfig.TRANSIT_API_KEY);
-        } else if (query.matches("#\\d+")){
+        } else if (query.matches("#\\d+")) {
             //if user searches bus key with # at the beginning of the string
             call = transitService.searchBusStopsByKey(Integer.parseInt(query.substring(1)), BuildConfig.TRANSIT_API_KEY);
         } else {
@@ -136,28 +135,25 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
                     busStops = transitResponse.getStops();
 
                     //searching by key only returns one stop
-                    if(busStops == null) {
+                    if (busStops == null) {
                         busStops = new ArrayList<BusStop>();
                         busStops.add(transitResponse.getStop());
                     }
 
                     //if no stops exist with the searched name
-                    if(busStops.isEmpty()) {
+                    if (busStops.isEmpty()) {
                         emptySearchView.setVisibility(View.VISIBLE);
                         busStopView.setVisibility(View.GONE);
-                    }
-                    else
-                    {
+                    } else {
                         emptySearchView.setVisibility(View.GONE);
                         busStopView.setVisibility(View.VISIBLE);
                         busStopAdapter.updateData(busStops);
                     }
                 } else {
-                    if(response.code() == 404) {
+                    if (response.code() == 404) {
                         emptySearchView.setVisibility(View.VISIBLE);
                         busStopView.setVisibility(View.GONE);
-                    }
-                    else {
+                    } else {
                         Log.e("transitService", "Error: " + response.code() + " - " + response.message());
                         showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
 
@@ -198,7 +194,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
-        if(busStops.size() > 0 && position >= 0 & position < busStops.size()) {
+        if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
             Intent intent = new Intent(getContext(), BusArrivals.class);
 
             intent.putExtra("BUS_STOP", busStops.get(position));
@@ -219,10 +215,8 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         return busStops;
     }
 
-    public void setBusStops(List<BusStop> busStops)
-    {
-        if(busStops == null)
-        {
+    public void setBusStops(List<BusStop> busStops) {
+        if (busStops == null) {
             return;
         }
         this.busStops = busStops;

@@ -32,19 +32,14 @@ public class SavedBusStopManager {
     }
 
     //if json is changed, then make sure this is reading the most recent json version
-    public void update()
-    {
+    public void update() {
         busStops = loadBusStopsFromJson();
     }
 
-    public BusStop getBusStop(String busStopKey)
-    {
-        if(busStops.containsKey(busStopKey))
-        {
+    public BusStop getBusStop(String busStopKey) {
+        if (busStops.containsKey(busStopKey)) {
             return busStops.get(String.valueOf(busStopKey));
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
@@ -80,7 +75,8 @@ public class SavedBusStopManager {
                 reader.close();
 
                 // Use Gson.fromJson with the read string
-                Type mapType = new TypeToken<Map<String, BusStop>>() {}.getType();
+                Type mapType = new TypeToken<Map<String, BusStop>>() {
+                }.getType();
                 Gson gson = new GsonBuilder().setLenient().create();
                 stopsMap = gson.fromJson(jsonString.toString(), mapType);
             }

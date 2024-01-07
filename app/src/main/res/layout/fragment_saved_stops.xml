@@ -18,6 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageButton
+            android:id="@+id/SavedEditCategoriesBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="30dp"
+            android:background="#FFFFFF"
+            android:src="@drawable/menu_icon"
+            android:contentDescription="Edit Categories" />
+
         <TextView
             android:id="@+id/tvCenter"
             android:layout_width="wrap_content"
@@ -26,16 +36,6 @@
             android:text="Saved Stops"
             android:textColor="@color/navy"
             android:textSize="24sp" />
-
-        <ImageButton
-            android:id="@+id/ArrivalsRefreshBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="30dp"
-            android:background="#FFFFFF"
-            android:contentDescription="Add New Category"
-            android:src="@drawable/add_icon" />
 
     </androidx.appcompat.widget.Toolbar>
 

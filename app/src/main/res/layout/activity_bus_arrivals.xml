@@ -35,7 +35,7 @@
             android:text="@string/arrivals"
             android:textColor="@color/navy"
             android:textSize="24sp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
         <ImageButton
             android:id="@+id/ArrivalsRefreshBtn"
@@ -45,8 +45,7 @@
             android:background="#FFFFFF"
             android:src="@drawable/refresh_enabled_icon"
             android:layout_marginEnd="30dp"
-            android:contentDescription="@string/refresh"
-            />
+            android:contentDescription="@string/refresh" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -197,7 +196,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ArrivalsBorder3"
-        android:visibility="gone"
-        >
-    </TextView>
+        android:visibility="gone"></TextView>
 </androidx.constraintlayout.widget.ConstraintLayout>

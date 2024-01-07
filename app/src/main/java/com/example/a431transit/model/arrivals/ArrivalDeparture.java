@@ -21,8 +21,7 @@ public class ArrivalDeparture {
         return getLocalTime(estimated);
     }
 
-    private LocalDateTime getLocalTime(String dateTimeString)
-    {
+    private LocalDateTime getLocalTime(String dateTimeString) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);

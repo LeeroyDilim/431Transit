@@ -61,6 +61,7 @@ import retrofit2.Response;
 public class MapFragment extends Fragment implements OnMapReadyCallback, BusStopViewInterface {
 
     private TransitAPIService transitService;
+    private boolean isFragmentValid = false;
 
     //fragment components
     private MapView mapView;
@@ -116,6 +117,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
+        isFragmentValid = true;
+
         //get and init components
         mapView = rootView.findViewById(R.id.mapView);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
@@ -139,8 +142,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userMarker == null)
-                {
+                if (userMarker == null) {
                     return;
                 }
 
@@ -164,11 +166,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         return rootView;
     }
 
-    private void initGoogleMap(Bundle savedInstanceState)
-    {
+    private void initGoogleMap(Bundle savedInstanceState) {
         Bundle mapViewBundle = null;
-        if(savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(BuildConfig.GOOGLE_API_KEY);
         }
 
@@ -210,6 +210,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
     @Override
     public void onMapReady(GoogleMap map) {
+        if (!isFragmentValid) {
+            return;
+        }
+
         googleMap = map;
 
         //set marker info window into a custom one
@@ -249,8 +253,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
             @Override
             public void onMapClick(LatLng latLng) {
                 //remove previous marker if it exists
-                if(userMarker != null)
-                {
+                if (userMarker != null) {
                     userMarker.remove();
                 }
 
@@ -264,8 +267,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
             public void onInfoWindowClick(@NonNull Marker marker) {
                 BusStop busStop = (BusStop) marker.getTag();
 
-                if(busStop == null)
-                {
+                if (busStop == null) {
                     return;
                 }
 
@@ -278,8 +280,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         });
     }
 
-    private void setMapToCurrentLocation()
-    {
+    private void setMapToCurrentLocation() {
         //check permissions
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -290,8 +291,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         }
 
         //delete user marker if it exists
-        if(userMarker != null)
-        {
+        if (userMarker != null) {
             userMarker.remove();
         }
 
@@ -299,7 +299,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     currentLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                     updateMap(currentLocation);
                 }
@@ -308,6 +308,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     }
 
     private void updateMap(LatLng location) {
+        if (getContext() == null) {
+            return;
+        }
+
         final int ZOOM_LEVEL = 15; //for the camera
 
         //set properties of the circle
@@ -326,8 +330,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         //remove previous circle if it exists
-        if(currentLocationCircle != null)
-        {
+        if (currentLocationCircle != null) {
             currentLocationCircle.remove();
         }
 
@@ -348,8 +351,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         final int[] retryCount = {0};
         Call<TransitResponse> call;
 
-        if(location == null)
-        {
+        if (location == null) {
             return;
         }
 
@@ -364,8 +366,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
                     busStops = transitResponse.getStops();
 
+
                     //update map if there are nearby bus stops
-                    if(!busStops.isEmpty()) {
+                    if (!busStops.isEmpty() && getContext() != null) {
                         updateBusStopMarkers();
                     }
 
@@ -407,24 +410,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         float busMarkerHue = hsl[0];
 
         //delete previous bus stop markers
-        if(busStopMarkers != null)
-        {
-            for(Marker busStopMarker : busStopMarkers)
-            {
+        if (busStopMarkers != null) {
+            for (Marker busStopMarker : busStopMarkers) {
                 busStopMarker.remove();
             }
         }
 
         busStopMarkers = new ArrayList<>();
 
-        for(BusStop busStop : busStops)
-        {
+        for (BusStop busStop : busStops) {
             LatLng busStopLatLng = new LatLng(Double.parseDouble(busStop.getCentre().getGeographic().getLatitude()), Double.parseDouble(busStop.getCentre().getGeographic().getLongitude()));
 
             //create marker and pass the bus stop instance onto it
             Marker busStopMarker = googleMap.addMarker(new MarkerOptions().position(busStopLatLng)
                     .title(busStop.getName())
-                    .snippet("#"+busStop.getKey())
+                    .snippet("#" + busStop.getKey())
                     .icon(BitmapDescriptorFactory.defaultMarker(busMarkerHue)));
 
             busStopMarker.setTag(busStop);
@@ -445,6 +445,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     public void onDestroy() {
         mapView.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        isFragmentValid = false;
     }
 
     @Override
@@ -510,7 +516,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
-        if(busStops.size() > 0 && position >= 0 & position < busStops.size()) {
+        if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
             Intent intent = new Intent(getContext(), BusArrivals.class);
 
             intent.putExtra("BUS_STOP", busStops.get(position));

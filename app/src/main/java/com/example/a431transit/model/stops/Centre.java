@@ -51,6 +51,6 @@ public class Centre implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeParcelable(geographic,flags);
+        dest.writeParcelable(geographic, flags);
     }
 }

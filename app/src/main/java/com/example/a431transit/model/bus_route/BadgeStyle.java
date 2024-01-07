@@ -2,6 +2,7 @@ package com.example.a431transit.model.bus_route;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 public class BadgeStyle implements Parcelable {

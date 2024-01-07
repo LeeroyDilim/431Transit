@@ -36,8 +36,7 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
         setHasStableIds(true);
     }
 
-    public void updateData(List<BusStop> newBusStops)
-    {
+    public void updateData(List<BusStop> newBusStops) {
         this.busStops = newBusStops;
         notifyDataSetChanged();
     }
@@ -65,7 +64,7 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
             }
 
             // Convert busKey to String before setting it to TextView
-            holder.busKeyView.setText("#"+busKey);
+            holder.busKeyView.setText("#" + busKey);
 
             //load bus stop image and display it
             currentBusStop.loadImage(context, holder.imageView, "circle");
@@ -95,7 +94,7 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
     public int getItemCount() {
         if (busStops != null)
             return busStops.size();
-        else{
+        else {
             return 0;
         }
 
@@ -130,12 +129,10 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (busStopViewInterface != null)
-                    {
+                    if (busStopViewInterface != null) {
                         int pos = getAdapterPosition();
 
-                        if(pos != RecyclerView.NO_POSITION)
-                        {
+                        if (pos != RecyclerView.NO_POSITION) {
                             busStopViewInterface.onItemClick(pos);
                         }
                     }
