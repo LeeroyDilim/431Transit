@@ -4,18 +4,18 @@
         android:id="@+id/saved_stops"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/saved_stops_icon"
+        android:icon="@drawable/icon_saved_stops"
         android:title="@string/saved_stops" />
     <item
         android:id="@+id/map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/map_icon"
+        android:icon="@drawable/icon_map"
         android:title="@string/map" />
     <item
         android:id="@+id/search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/search_icon"
+        android:icon="@drawable/icon_search"
         android:title="@string/search" />
 </menu>

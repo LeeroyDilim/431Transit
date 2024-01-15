@@ -32,6 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/info_window_bus_name"
         android:layout_alignEnd="@+id/info_window_bus_name"
-        android:src="@drawable/right_line">
+        android:src="@drawable/icon_right_arrow">
     </ImageView>
 </RelativeLayout>

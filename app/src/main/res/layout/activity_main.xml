@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/primary_theme"
     tools:context=".app.MainActivity">
 
     <FrameLayout
@@ -28,10 +28,10 @@
         android:id="@+id/bottomNavigationView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/white"
-        app:itemActiveIndicatorStyle="@color/white"
+        app:backgroundTint="@color/primary_theme"
+        app:itemActiveIndicatorStyle="@color/primary_theme"
         app:itemIconSize="40dp"
-        app:itemIconTint="@color/navy"
+        app:itemIconTint="@color/secondary_theme"
         app:itemRippleColor="@null"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"

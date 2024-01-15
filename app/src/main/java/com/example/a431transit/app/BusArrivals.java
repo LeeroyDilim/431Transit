@@ -204,7 +204,7 @@ public class BusArrivals extends AppCompatActivity {
 
     private void resetRefreshButton() {
         refreshButton.setEnabled(true);
-        refreshButton.setImageResource(R.drawable.refresh_enabled_icon);
+        refreshButton.setImageResource(R.drawable.icon_refresh_enabled);
     }
 
     //If user has chosen to rename a bus stop, display a alert dialog with an editable text
@@ -461,9 +461,9 @@ public class BusArrivals extends AppCompatActivity {
 
         //If bus stop is in the "Saved" category, then display that it is so
         if (categoriesManager.busStopInCategory("Saved", busStop)) {
-            savedButton.setImageResource(R.drawable.saved_stops_icon_filled);
+            savedButton.setImageResource(R.drawable.icon_saved_stops_filled);
         } else {
-            savedButton.setImageResource(R.drawable.saved_stops_icon);
+            savedButton.setImageResource(R.drawable.icon_saved_stops);
         }
 
         //go back to the previous activity once user clicks on back button
@@ -498,7 +498,7 @@ public class BusArrivals extends AppCompatActivity {
                 //if the user is spamming the button, reduce the amount of requests
                 //they're making. One request per 10 seconds
                 refreshButton.setEnabled(false);
-                refreshButton.setImageResource(R.drawable.refresh_disabled_icon);
+                refreshButton.setImageResource(R.drawable.icon_refresh_disabled);
                 startButtonTimer(5000);
 
                 //For user feedback, make list disappear for a short amount of time
@@ -541,11 +541,11 @@ public class BusArrivals extends AppCompatActivity {
             public void onClick(View v) {
                 if (categoriesManager.busStopInCategory("Saved", busStop)) {
                     categoriesManager.removeStopFromCategory("Saved", busStop);
-                    savedButton.setImageResource(R.drawable.saved_stops_icon);
+                    savedButton.setImageResource(R.drawable.icon_saved_stops);
 
                 } else {
                     categoriesManager.addStopToCategory("Saved", busStop);
-                    savedButton.setImageResource(R.drawable.saved_stops_icon_filled);
+                    savedButton.setImageResource(R.drawable.icon_saved_stops_filled);
                 }
             }
         });

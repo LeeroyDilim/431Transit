@@ -156,6 +156,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_CODE);
 
+            updateMap(DEFAULT_LOCATION);
             return;
         }
 
@@ -235,7 +236,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
             return;
         }
 
-        final int ZOOM_LEVEL = 15; //for the camera
+        final int ZOOM_LEVEL = 17; //for the camera
 
         //set properties of the circle
         final int CIRCLE_STROKE_WIDTH = 5;
@@ -262,7 +263,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
                 new CircleOptions().center(location)
                         .radius(SEARCH_RADIUS)
                         .strokeWidth(CIRCLE_STROKE_WIDTH)
-                        .strokeColor(getContext().getColor(R.color.navy))
+                        .strokeColor(getContext().getColor(R.color.secondary_theme))
                         .strokePattern(strokePattern)
         );
 
@@ -331,7 +332,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
     private void updateBusStopMarkers() {
         //Extract color from resource file and convert to hue
-        int color = getResources().getColor(R.color.bus_marker_color);
+        int color = getResources().getColor(R.color.secondary_theme);
         float[] hsl = new float[3];
         ColorUtils.colorToHSL(color, hsl);
         float busMarkerHue = hsl[0];
@@ -410,7 +411,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
     private void resetRefreshButton() {
         refreshButton.setEnabled(true);
-        refreshButton.setImageResource(R.drawable.refresh_enabled_icon);
+        refreshButton.setImageResource(R.drawable.icon_refresh_enabled);
     }
 
     @Override
@@ -420,6 +421,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
         //if user agrees to permission request, update map with their last location
         //if not, set map to a default location
+        Log.i("a",  REQUEST_CODE +" " + requestCode);
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setMapToCurrentLocation();
@@ -472,7 +474,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
                 //if the user is spamming the button, reduce the amount of requests
                 //they're making. One request per 10 seconds
                 refreshButton.setEnabled(false);
-                refreshButton.setImageResource(R.drawable.refresh_disabled_icon);
+                refreshButton.setImageResource(R.drawable.icon_refresh_disabled);
                 startButtonTimer(5000);
             }
         });

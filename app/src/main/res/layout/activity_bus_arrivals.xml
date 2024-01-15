@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:id="@+id/arrival_view"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/primary_theme"
     tools:context=".app.BusArrivals">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/ArrivalsToolbar"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/white"
+        android:background="@color/primary_theme"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
             android:layout_height="48dp"
             android:layout_gravity="start"
             android:background="#FFFFFF"
-            android:src="@drawable/back_icon"
+            android:src="@drawable/icon_back"
             android:layout_marginStart="30dp"
             android:contentDescription="@string/back_button" />
 
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/arrivals"
-            android:textColor="@color/navy"
+            android:textColor="@color/secondary_theme"
             android:textSize="24sp"
             android:layout_gravity="center" />
 
@@ -43,7 +43,7 @@
             android:layout_height="48dp"
             android:layout_gravity="end"
             android:background="#FFFFFF"
-            android:src="@drawable/refresh_enabled_icon"
+            android:src="@drawable/icon_refresh_enabled"
             android:layout_marginEnd="30dp"
             android:contentDescription="@string/refresh" />
 
@@ -89,7 +89,7 @@
         android:layout_height="wrap_content"
         android:paddingVertical="10dp"
         android:paddingHorizontal="18dp"
-        android:background="@color/white"
+        android:background="@color/primary_theme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ArrivalsBorder2">
@@ -127,16 +127,16 @@
             android:layout_height="48dp"
             android:layout_marginEnd="15dp"
             android:layout_toStartOf="@+id/ArrivalsBusMenuBtn"
-            android:background="@color/white"
-            android:src="@drawable/saved_stops_icon" />
+            android:background="@color/primary_theme"
+            android:src="@drawable/icon_saved_stops" />
 
         <ImageButton
             android:id="@+id/ArrivalsBusMenuBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
-            android:background="@color/white"
-            android:src="@drawable/menu_icon" />
+            android:background="@color/primary_theme"
+            android:src="@drawable/icon_menu" />
 
         <!-- FlexboxLayout -->
         <HorizontalScrollView
@@ -177,7 +177,7 @@
         android:id="@+id/busArrivalsView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
+        android:background="@color/primary_theme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -185,7 +185,7 @@
 
     <TextView
         android:id="@+id/emptyArrivalsView"
-        android:background="@color/white"
+        android:background="@color/primary_theme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No buses expected in the next two hours."

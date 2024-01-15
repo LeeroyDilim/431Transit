@@ -23,7 +23,7 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/white"
+            android:background="@color/primary_theme"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,8 +35,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="start"
-                android:background="@color/white"
-                android:src="@drawable/live_location_icon"
+                android:background="@color/primary_theme"
+                android:src="@drawable/icon_live_location"
                 android:layout_marginStart="30dp"
                 android:contentDescription="Current Location" />
 
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Map"
-                android:textColor="@color/navy"
+                android:textColor="@color/secondary_theme"
                 android:textSize="24sp"
                 android:layout_gravity="center" />
 
@@ -53,8 +53,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
-                android:background="@color/white"
-                android:src="@drawable/refresh_enabled_icon"
+                android:background="@color/primary_theme"
+                android:src="@drawable/icon_refresh_enabled"
                 android:layout_marginEnd="30dp"
                 android:contentDescription="Refresh Location" />
         </androidx.appcompat.widget.Toolbar>
@@ -79,7 +79,7 @@
             android:id="@+id/mapBottomSheetIcon"
             android:layout_width="50dp"
             android:layout_height="20dp"
-            android:src="@drawable/minimize_fill"
+            android:src="@drawable/icon_minimize"
             android:scaleType="centerCrop"
             android:layout_gravity="center|top">
         </ImageView>
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:text="Nearby Stops"
-            android:textColor="@color/navy"
+            android:textColor="@color/secondary_theme"
             android:textSize="20sp"
             android:layout_marginTop="20dp"
             android:layout_gravity="center|top" />
@@ -131,10 +131,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            app:backgroundTint="@color/white"
-            app:itemActiveIndicatorStyle="@color/white"
+            app:backgroundTint="@color/primary_theme"
+            app:itemActiveIndicatorStyle="@color/primary_theme"
             app:itemIconSize="40dp"
-            app:itemIconTint="@color/navy"
+            app:itemIconTint="@color/secondary_theme"
             app:itemRippleColor="@null"
             app:labelVisibilityMode="unlabeled"
             app:layout_constraintBottom_toBottomOf="parent"

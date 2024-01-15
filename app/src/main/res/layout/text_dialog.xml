@@ -45,8 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/input_dialog_edit_text"
         android:layout_alignEnd="@+id/input_dialog_edit_text"
-        android:backgroundTint="@color/navy"
+        android:backgroundTint="@color/secondary_theme"
         android:fontFamily="@font/inter_medium"
-        android:textColor="@color/white"
+        android:textColor="@color/primary_theme"
         android:text="SUBMIT"></androidx.appcompat.widget.AppCompatButton>
 </RelativeLayout>

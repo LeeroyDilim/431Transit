@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         //On startup, the Saved Stop fragment is displayed
         replaceFragment(savedStopsFragment);
-        bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.saved_stops_icon_filled);
+        bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops_filled);
 
         //Once a user has chosen to move to another page from the bottom navigation view, display the appropriate fragment
         bottomNavigationView3.setOnItemSelectedListener(item -> {
@@ -70,16 +70,16 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(savedStopsFragment);
 
                 //Update Icons
-                item.setIcon(R.drawable.saved_stops_icon_filled);
-                bottomNavigationView3.getMenu().getItem(1).setIcon(R.drawable.map_icon);
-                bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.search_icon);
+                item.setIcon(R.drawable.icon_saved_stops_filled);
+                bottomNavigationView3.getMenu().getItem(1).setIcon(R.drawable.icon_map);
+                bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.icon_search);
             } else if (itemId == R.id.map) {
                 replaceFragment(new MapFragment(transitService));
 
                 //Update Icons
-                item.setIcon(R.drawable.map_icon_filled);
-                bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.saved_stops_icon);
-                bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.search_icon);
+                item.setIcon(R.drawable.icon_map_filled);
+                bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops);
+                bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.icon_search);
             } else if (itemId == R.id.search) {
                 replaceFragment(searchFragment);
 
@@ -87,9 +87,9 @@ public class MainActivity extends AppCompatActivity {
                 searchFragment.setBusStops(busStopsList);
 
                 //Update Icons
-                item.setIcon(R.drawable.search_icon_filled);
-                bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.saved_stops_icon);
-                bottomNavigationView3.getMenu().getItem(1).setIcon(R.drawable.map_icon);
+                item.setIcon(R.drawable.icon_search_filled);
+                bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops);
+                bottomNavigationView3.getMenu().getItem(1).setIcon(R.drawable.icon_map);
             }
 
             return true;
