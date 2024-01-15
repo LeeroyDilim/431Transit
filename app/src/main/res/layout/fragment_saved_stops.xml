@@ -11,7 +11,7 @@
         android:id="@+id/SavedStopsToolBar"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/white"
+        android:background="@color/primary_theme"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,8 +24,8 @@
             android:layout_height="48dp"
             android:layout_gravity="end"
             android:layout_marginEnd="30dp"
-            android:background="@color/white"
-            android:src="@drawable/menu_icon"
+            android:background="@color/primary_theme"
+            android:src="@drawable/icon_menu"
             android:contentDescription="Edit Categories" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Saved Stops"
-            android:textColor="@color/navy"
+            android:textColor="@color/secondary_theme"
             android:textSize="24sp" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -60,7 +60,7 @@
             android:id="@+id/SavedStopsExpandableList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="@color/primary_theme"
             android:divider="@color/border"
             android:dividerHeight="1dp"
             android:foregroundTint="@color/divider"
@@ -85,10 +85,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:backgroundTint="@color/white"
-        app:itemActiveIndicatorStyle="@color/white"
+        app:backgroundTint="@color/primary_theme"
+        app:itemActiveIndicatorStyle="@color/primary_theme"
         app:itemIconSize="40dp"
-        app:itemIconTint="@color/navy"
+        app:itemIconTint="@color/secondary_theme"
         app:itemRippleColor="@null"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
