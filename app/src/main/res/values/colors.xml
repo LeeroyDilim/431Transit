@@ -9,5 +9,5 @@
     <color name="BAD_STATUS">#D42122</color>
     <color name="GOOD_STATUS">#33504A</color>
     <color name="CAUTIONARY_STATUS">#FFC107</color>
-
+    <color name="divider">#A8A8A8</color>
 </resources>

@@ -61,8 +61,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:orientation="vertical">
-        </ExpandableListView>
+            android:divider="@color/border"
+            android:dividerHeight="1dp"
+            android:foregroundTint="@color/divider"
+            android:orientation="vertical"></ExpandableListView>
 
     </RelativeLayout>
 
