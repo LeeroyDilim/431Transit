@@ -107,6 +107,7 @@
             android:fontFamily="@font/inter_bold"
             android:maxLines="1"
             android:text="Mandalay @ Margate"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <TextView
