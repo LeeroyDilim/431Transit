@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
-import com.example.a431transit.model.TransitResponse;
-import com.example.a431transit.model.stops.BusStop;
+import com.example.a431transit.objects.TransitResponse;
+import com.example.a431transit.objects.stops.BusStop;
 import com.example.a431transit.util.bus_stop_list.BusStopAdapter;
 import com.example.a431transit.util.bus_stop_list.BusStopViewInterface;
 import com.example.a431transit.util.api_communication.TransitAPIService;

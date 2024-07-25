@@ -23,7 +23,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.a431transit.R;
-import com.example.a431transit.model.stops.BusStop;
+import com.example.a431transit.objects.stops.BusStop;
 import com.example.a431transit.util.api_communication.TransitAPIService;
 import com.example.a431transit.util.bus_stop_expandable_list.BusStopGridViewItemClickInterface;
 import com.example.a431transit.util.bus_stop_expandable_list.CategoryExpandableListAdapter;

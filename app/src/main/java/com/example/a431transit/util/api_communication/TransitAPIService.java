@@ -1,6 +1,6 @@
 package com.example.a431transit.util.api_communication;
 
-import com.example.a431transit.model.TransitResponse;
+import com.example.a431transit.objects.TransitResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

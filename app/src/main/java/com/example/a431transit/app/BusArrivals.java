@@ -29,12 +29,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
-import com.example.a431transit.model.TransitResponse;
-import com.example.a431transit.model.arrivals.ArrivalInstance;
-import com.example.a431transit.model.arrivals.RouteSchedule;
-import com.example.a431transit.model.arrivals.ScheduledStop;
-import com.example.a431transit.model.bus_route.BusRoute;
-import com.example.a431transit.model.stops.BusStop;
+import com.example.a431transit.objects.TransitResponse;
+import com.example.a431transit.objects.arrivals.ArrivalInstance;
+import com.example.a431transit.objects.arrivals.route_schedules.RouteSchedule;
+import com.example.a431transit.objects.arrivals.route_schedules.scheduled_stops.ScheduledStop;
+import com.example.a431transit.objects.bus_route.BusRoute;
+import com.example.a431transit.objects.stops.BusStop;
 import com.example.a431transit.util.bus_stop_list.BusArrivalAdapter;
 import com.example.a431transit.util.storage_managers.CategoriesManager;
 import com.example.a431transit.util.api_communication.TransitAPIClient;

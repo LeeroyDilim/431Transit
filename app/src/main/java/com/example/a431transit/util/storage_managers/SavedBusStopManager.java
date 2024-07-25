@@ -2,10 +2,8 @@
 package com.example.a431transit.util.storage_managers;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.example.a431transit.model.arrivals.Bus;
-import com.example.a431transit.model.stops.BusStop;
+import com.example.a431transit.objects.stops.BusStop;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

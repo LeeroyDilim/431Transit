@@ -1,7 +1,6 @@
 package com.example.a431transit.util.bus_stop_expandable_list;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.a431transit.R;
-import com.example.a431transit.model.stops.BusStop;
+import com.example.a431transit.objects.stops.BusStop;
 import com.example.a431transit.util.api_communication.TransitAPIService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
