@@ -3,7 +3,7 @@ package com.example.a431transit.util.storage_managers;
 
 import android.content.Context;
 
-import com.example.a431transit.objects.stops.BusStop;
+import com.example.a431transit.objects.bus_stop.BusStop;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

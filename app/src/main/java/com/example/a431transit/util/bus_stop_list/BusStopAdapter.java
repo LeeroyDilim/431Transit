@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a431transit.R;
-import com.example.a431transit.objects.stops.BusStop;
+import com.example.a431transit.objects.bus_stop.BusStop;
 import com.example.a431transit.util.api_communication.TransitAPIService;
 import com.google.android.flexbox.FlexboxLayout;
 

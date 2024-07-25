@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a431transit.R;
-import com.example.a431transit.objects.arrivals.ArrivalInstance;
+import com.example.a431transit.objects.bus_arrivals.ArrivalInstance;
 import com.example.a431transit.util.api_communication.TransitAPIService;
 
 import java.util.List;

@@ -1,18 +1,15 @@
 package com.example.a431transit.objects.bus_route;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 
 import com.example.a431transit.objects.bus_route.badge_style.BadgeStyle;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.List;
 
-public class BusRoute implements Parcelable {
+public class BusRoute implements Serializable {
     @SerializedName("key")
     private Object key;
     @SerializedName("number")
@@ -27,47 +24,6 @@ public class BusRoute implements Parcelable {
     private Object badgeLabel;
     @SerializedName("badge-style")
     private BadgeStyle badgeStyle;
-
-    protected BusRoute(Parcel in) {
-        key = in.readValue(Object.class.getClassLoader());
-        number = in.readValue(Object.class.getClassLoader());
-        customerType = in.readString();
-        coverage = in.readString();
-        badgeLabel = in.readValue(Object.class.getClassLoader());
-        badgeStyle = in.readParcelable(BadgeStyle.class.getClassLoader());
-    }
-
-    public static final Creator<BusRoute> CREATOR = new Creator<BusRoute>() {
-        @Override
-        public BusRoute createFromParcel(Parcel in) {
-            return new BusRoute(in);
-        }
-
-        @Override
-        public BusRoute[] newArray(int size) {
-            return new BusRoute[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        // Write data to the parcel
-        dest.writeValue(key);
-        dest.writeValue(number);
-        dest.writeString(customerType);
-        dest.writeString(coverage);
-        dest.writeValue(badgeLabel);
-        dest.writeParcelable(badgeStyle, flags);
-    }
-
-    public static void writeToParcelList(List<BusRoute> busRoutes, Parcel dest, int flags) {
-        dest.writeTypedList(busRoutes);
-    }
 
     //Return a string containing the key of this route
     public String getKey() {

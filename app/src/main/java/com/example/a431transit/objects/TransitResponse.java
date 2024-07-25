@@ -1,8 +1,8 @@
 package com.example.a431transit.objects;
 
-import com.example.a431transit.objects.arrivals.StopSchedule;
+import com.example.a431transit.objects.bus_arrivals.StopSchedule;
 import com.example.a431transit.objects.bus_route.BusRoute;
-import com.example.a431transit.objects.stops.BusStop;
+import com.example.a431transit.objects.bus_stop.BusStop;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
