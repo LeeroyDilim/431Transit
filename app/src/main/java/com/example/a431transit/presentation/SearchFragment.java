@@ -1,4 +1,4 @@
-package com.example.a431transit.app;
+package com.example.a431transit.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -64,7 +64,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         return view;
     }
 
-    //todo communicate through the front end
+    //todo communicate through the logic layer
     //Search for bus stops given a user's text input
     private void searchBusStops(String query) {
         // Add a counter for retries

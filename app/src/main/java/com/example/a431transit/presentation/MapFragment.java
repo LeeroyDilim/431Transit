@@ -1,4 +1,4 @@
-package com.example.a431transit.app;
+package com.example.a431transit.presentation;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -168,7 +168,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         googleMap.setMyLocationEnabled(true);
         setMapToCurrentLocation();
 
-        //todo move to separate method
         //If a user clicks on the map, set a marker on the tap and record its coordinates
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -183,7 +182,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
             }
         });
 
-        //todo move to separate method
         //If user clicks on a bus stop's info window, take them to its Arrivals screen
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override

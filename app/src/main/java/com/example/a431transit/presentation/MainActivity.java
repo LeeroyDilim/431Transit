@@ -1,4 +1,4 @@
-package com.example.a431transit.app;
+package com.example.a431transit.presentation;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import com.example.a431transit.R;
+import com.example.a431transit.objects.bus_arrivals.route_schedules.scheduled_stops.bus.Bus;
 import com.example.a431transit.objects.bus_stop.BusStop;
 import com.example.a431transit.util.api_communication.TransitAPIClient;
 import com.example.a431transit.util.api_communication.TransitAPIService;
@@ -18,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    //todo make api call retries be delegated to a single class
     ActivityMainBinding binding;
 
     //keep track of the list of bus stops the user searched for in the Search Fragment
@@ -102,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    public void startIntent(BusStop busStop){
+
     }
 
 }

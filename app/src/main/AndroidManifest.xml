@@ -21,10 +21,10 @@
             android:value="${GOOGLE_API_KEY}" />
 
         <activity
-            android:name=".app.BusArrivals"
+            android:name=".presentation.BusArrivals"
             android:exported="false" />
         <activity
-            android:name=".app.MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>

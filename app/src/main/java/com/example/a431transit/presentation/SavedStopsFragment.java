@@ -1,4 +1,4 @@
-package com.example.a431transit.app;
+package com.example.a431transit.presentation;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -93,6 +93,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
         //get most recent version of the json file
         categoriesManager.update();
 
+        //todo communicate through logic layer
         //get category list and order them by the earliest creation date
         categoryNames = categoriesManager.getAllCategories();
         Collections.reverse(categoryNames);

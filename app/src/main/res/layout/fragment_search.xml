@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/primary_theme"
     app:layout_goneMarginBottom="10dp"
-    tools:context=".app.SearchFragment">
+    tools:context=".presentation.SearchFragment">
 
     <View
         android:id="@+id/searchBorder"

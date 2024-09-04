@@ -5,7 +5,7 @@
     android:id="@+id/categoriesView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".app.SavedStopsFragment">
+    tools:context=".presentation.SavedStopsFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/SavedStopsToolBar"

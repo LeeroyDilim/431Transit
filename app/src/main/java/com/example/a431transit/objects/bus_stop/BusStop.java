@@ -71,6 +71,7 @@ public class BusStop implements Serializable {
     @SerializedName("filteredRoutes")
     private List<String> filteredRoutes;
 
+    //todo delegate to a separate class
     //store routes both in memory and in a cache
     private static final LruCache<String, List<BusRoute>> routeCache = new LruCache<>(10 * 1024 * 1024);
     private List<BusRoute> busRoutes;
@@ -78,6 +79,7 @@ public class BusStop implements Serializable {
     //store bus stop images in a cache
     private static final LruCache<String, Bitmap> imageCache = new LruCache<>(10 * 1024 * 1024);
 
+    //todo delegate to logic layer
     //Make an API call to get the current routes that visit the stop
     public void loadBusRoutes(final Context context, TransitAPIService transitService, ViewGroup layout) {
         // Add a counter for retries
@@ -141,6 +143,7 @@ public class BusStop implements Serializable {
         }
     }
 
+    //todo move to front end
     //For each bus route, create a text view and insert it into the given layout
     private void updateRouteView(Context context, List<BusRoute> busRoutes, ViewGroup layout) {
         //remove the previously displayed routes
@@ -177,6 +180,7 @@ public class BusStop implements Serializable {
         }
     }
 
+    //todo move to front end
     //Create a text view with the bus route's properties
     private static TextView createRouteTextView(Context context, BusRoute busRoute) {
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -213,11 +217,13 @@ public class BusStop implements Serializable {
         return output;
     }
 
+    //todo move to logic layer end
     //Communicate with the Google Static Maps API to fetch an image of the bus stop in google maps
     public void loadImage(final Context context, final ImageView imageView, String shape) {
         //dimensions of image requested
         int width, height, zoom;
 
+        //todo WHAT?
         //set the appropriate dimensions for this method call
         if (shape.equals("circle")) {
             width = 300;
@@ -231,6 +237,7 @@ public class BusStop implements Serializable {
             return;
         }
 
+        //todo MOVE THIS SHIT TO PERSISTENCE NOW!!!!!
         //create the url to send to the google static map api
         String imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
                 "&zoom=" + zoom + "&size=" + width + "x" + height + "&markers=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
@@ -321,6 +328,7 @@ public class BusStop implements Serializable {
         isSaved = saved;
     }
 
+    //todo move to logic
     public Boolean inCategory(String category) {
         if (inCategories != null) {
             return inCategories.contains(category);
@@ -329,6 +337,7 @@ public class BusStop implements Serializable {
         return false;
     }
 
+    //todo move to logic
     public Boolean notInAnyCategory() {
         if (inCategories != null) {
             return inCategories.isEmpty();
@@ -337,6 +346,7 @@ public class BusStop implements Serializable {
         return false;
     }
 
+    //todo move to logic
     public void addCategory(String category) {
         if (inCategories == null) {
             inCategories = new ArrayList<>();
@@ -349,6 +359,7 @@ public class BusStop implements Serializable {
         return inCategories;
     }
 
+    //todo move to logic
     public List<String> getUserCategories() {
         List<String> output = null;
 
@@ -360,16 +371,18 @@ public class BusStop implements Serializable {
         return output;
     }
 
+    //todo move to logic
     public void removeCategory(String category) {
         if (inCategories != null) {
             inCategories.remove(category);
         }
     }
-
+    //todo move to logic
     public List<String> getFilteredRoutes() {
         return filteredRoutes;
     }
 
+    //todo move to logic
     public void setFilteredRoutes(List<String> filteredRoutes) {
         this.filteredRoutes = filteredRoutes;
     }

@@ -31,6 +31,7 @@ public class ArrivalInstance {
         this.IS_CANCELLED = isCancelled;
     }
 
+    //todo delegate to presentation layer
     //Given a text view, modify it with the bus routes corresponding badge and font/background colors
     public void loadRouteBadge(TextView textView) {
         int backgroundColor = android.graphics.Color.parseColor(BADGE_STYLE.getBackgroundColor());
@@ -46,12 +47,13 @@ public class ArrivalInstance {
 
         textView.setBackgroundColor(backgroundColor);
     }
-
+    //todo delegate to presentation layer
     //given a text view, modify it with the route name
     public void loadRouteName(TextView textView) {
         textView.setText(ROUTE_NAME);
     }
 
+    //todo delegate to presentation layer
     //Given a text view, modify it with the scheduled departure time for this bus
     public void loadBusTime(TextView textView) {
         String timeText;
@@ -76,6 +78,7 @@ public class ArrivalInstance {
         textView.setText(timeText);
     }
 
+    //todo delegate to presentation layer
     //Given a text view, modify it with the current status of the bus
     public void loadBusStatus(Context context, TextView textView) {
         String status;
@@ -87,6 +90,7 @@ public class ArrivalInstance {
             status = "CANCELLED";
             colorID = R.color.BAD_STATUS;
         } else if (BUS_ACTUAL_ARRIVAL.isAfter(BUS_EXPECTED_ARRIVAL)) {
+            //todo fix a bug here
             status = "Late";
             colorID = R.color.BAD_STATUS;
         } else if (BUS_ACTUAL_ARRIVAL.isBefore(BUS_EXPECTED_ARRIVAL)) {

@@ -1,4 +1,4 @@
-package com.example.a431transit.app;
+package com.example.a431transit.presentation;
 
 import android.app.Activity;
 import android.app.AlertDialog;

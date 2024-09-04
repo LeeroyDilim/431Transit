@@ -6,7 +6,7 @@
     android:id="@+id/arrival_view"
     android:layout_height="match_parent"
     android:background="@color/primary_theme"
-    tools:context=".app.BusArrivals">
+    tools:context=".presentation.BusArrivals">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/ArrivalsToolbar"
