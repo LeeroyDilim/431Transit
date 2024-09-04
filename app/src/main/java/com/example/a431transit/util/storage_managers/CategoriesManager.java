@@ -166,6 +166,8 @@ public class CategoriesManager {
         return savedBusStopManager.isBusStopSaved(busStop);
     }
 
+
+    //TODO: decouple
     //Load Categories from external storage
     private Map<String, List<String>> loadCategoriesFromJson() {
         Map<String, List<String>> categoriesMap = new LinkedHashMap<>();

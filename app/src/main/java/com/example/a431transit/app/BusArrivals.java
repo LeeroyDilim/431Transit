@@ -50,7 +50,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BusArrivals extends AppCompatActivity {
-
+    //TODO: separate dialogs into separate class
     private CategoriesManager categoriesManager;
     private TransitAPIService transitService = TransitAPIClient.getApiService();
     private List<ArrivalInstance> arrivalInstances = new ArrayList<>();
@@ -77,6 +77,7 @@ public class BusArrivals extends AppCompatActivity {
         //get bus stop that was passed through by fragment
         busStop = getIntent().getSerializableExtra("BUS_STOP", BusStop.class);
 
+        //TODO: communicate to logic layer instead
         //get user saved stops from storage
         categoriesManager = new CategoriesManager(this);
 
@@ -93,7 +94,7 @@ public class BusArrivals extends AppCompatActivity {
         getArrivals();
     }
 
-
+    //TODO: remove from presentation layer
     //Make a call to the Winnipeg Transit API to get the bus schedule for this stop.
     //Once a response has been received, render that data onto the screen
     private void getArrivals() {
@@ -183,6 +184,7 @@ public class BusArrivals extends AppCompatActivity {
         busArrivalViewAdapter.updateData(arrivalInstances);
     }
 
+    //TODO: delegate to a utility class
     //If user has refreshed the arrivals list,
     //prevent them from refreshing the list again for a set amount of time
     private void startButtonTimer(long millisInFuture) {
@@ -202,6 +204,7 @@ public class BusArrivals extends AppCompatActivity {
         countDownTimer.start();
     }
 
+    //TODO: delegate to a utility class
     private void resetRefreshButton() {
         refreshButton.setEnabled(true);
         refreshButton.setImageResource(R.drawable.icon_refresh_enabled);
@@ -226,6 +229,7 @@ public class BusArrivals extends AppCompatActivity {
             public void onClick(View v) {
                 String nickname = inputText.getText().toString();
 
+                //TODO: delegate to logic layer
                 //if user inputs nothing, reset the bus stop name
                 //to its original name
                 if (nickname.equals("")) {
@@ -393,7 +397,6 @@ public class BusArrivals extends AppCompatActivity {
             checkedTextView.setChecked(checkedItems[position]);
         });
 
-
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -428,6 +431,7 @@ public class BusArrivals extends AppCompatActivity {
         dialog.show();
     }
 
+    //TODO: setOnClickListeners made into own methods
     private void initComponents() {
         //get references to our components
         busNameView = findViewById(R.id.ArrivalsBusName);

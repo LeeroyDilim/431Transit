@@ -64,6 +64,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         return view;
     }
 
+    //todo communicate through the front end
     //Search for bus stops given a user's text input
     private void searchBusStops(String query) {
         // Add a counter for retries
@@ -164,6 +165,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
+        //todo util class!
         if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
             Intent intent = new Intent(getContext(), BusArrivals.class);
 
@@ -188,6 +190,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         busStopAdapter.updateData(busStops);
     }
 
+    //todo separate methods
     private void initComponents(View view) {
         searchView = view.findViewById(R.id.searchView);
         emptySearchView = view.findViewById(R.id.emptySearchView);
@@ -221,6 +224,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         searchView.clearFocus();
     }
 
+    //todo dialog class
     private void showAlert(Context context, String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 

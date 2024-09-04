@@ -43,11 +43,13 @@ import java.util.List;
 import java.util.Map;
 
 public class SavedStopsFragment extends Fragment implements BusStopGridViewItemClickInterface {
+    //todo move to constants class
     private static final String EXPANDED_LIST_FILE_NAME = "expanded_list_state.json";
     private static final int REQUEST_CODE = 1;
-    TransitAPIService transitService;
+    private TransitAPIService transitService;
     private List<String> categoryNames;
     private HashMap<String, List<BusStop>> categoryChildren;
+    //todo communicate to logic layer instead
     private CategoriesManager categoriesManager;
     private ExpandableListView categoryListView;
     private CategoryExpandableListAdapter categoryExpandableListAdapter;
@@ -120,6 +122,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
     @Override
     //If a user has clicked on a bus stop, show them its arrivals screen
     public void onGridViewBusStopClick(BusStop busStop) {
+        //todo move to util class
         Intent intent = new Intent(getContext(), BusArrivals.class);
 
         intent.putExtra("BUS_STOP", busStop);
@@ -127,6 +130,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
         startActivityForResult(intent, REQUEST_CODE);
     }
 
+    //todo move to dialog class
     //If user chooses to create a new category, show an alert dialog with an edit text component
     private void addCategoryDialog() {
         //Create alert and link it to our custom dialog
@@ -174,6 +178,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
         alertDialog.show();
     }
 
+    //todo move to dialog class
     //If user chooses to delete a category, show a dialog with all user made categories displayed
     private void removeCategoriesDialog() {
         //Create alert and link it to our custom dialog
@@ -243,6 +248,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
         dialog.show();
     }
 
+    //todo move to frontend object
     //Save the expanded state of each category and put them into external storage
     private void saveExpandedState() {
         Map<String, Boolean> expandedMap = new HashMap<>();
@@ -266,7 +272,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
         }
     }
 
-    // Load the expanded state from external storage and apply it to the ExpandableListView
+    //todo move to frontend object
     private void loadExpandedState() {
         try {
             File file = new File(getContext().getExternalFilesDir(null), EXPANDED_LIST_FILE_NAME);
@@ -301,6 +307,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
         }
     }
 
+    //todo move to separate methods
     private void initComponents(View rootView) {
         //Get Components
         categoryListView = rootView.findViewById(R.id.SavedStopsExpandableList);

@@ -59,7 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, BusStopViewInterface {
-
+    //todo move permissions to separate class
     //connection to the TransitAPI
     private TransitAPIService transitService;
 
@@ -145,6 +145,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         map.setLatLngBoundsForCameraTarget(winnipegBounds);
         map.setMinZoomPreference(10.0f);
 
+        //todo: move to separate method
         //check permissions
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -167,6 +168,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         googleMap.setMyLocationEnabled(true);
         setMapToCurrentLocation();
 
+        //todo move to separate method
         //If a user clicks on the map, set a marker on the tap and record its coordinates
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -181,6 +183,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
             }
         });
 
+        //todo move to separate method
         //If user clicks on a bus stop's info window, take them to its Arrivals screen
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -191,6 +194,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
                     return;
                 }
 
+                //todo move this to utility method/class
                 Intent intent = new Intent(getContext(), BusArrivals.class);
                 intent.putExtra("BUS_STOP", busStop);
 
@@ -271,6 +275,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         getNearbyBusStops(location);
     }
 
+    //todo move to logic layer
     private void getNearbyBusStops(LatLng location) {
         // Add a counter for retries
         final int[] retryCount = {0};
@@ -389,6 +394,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         mapView.onLowMemory();
     }
 
+    //todo move to util class
     //Timer for the refresh button cooldown
     private void startButtonTimer(long millisInFuture) {
         // Timer finished, enable the button and reset its state
@@ -408,7 +414,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
         countDownTimer.start();
     }
-
+    //todo move to util class
     private void resetRefreshButton() {
         refreshButton.setEnabled(true);
         refreshButton.setImageResource(R.drawable.icon_refresh_enabled);
@@ -434,6 +440,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
+        //todo move to util class
         if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
             Intent intent = new Intent(getContext(), BusArrivals.class);
 
@@ -443,6 +450,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         }
     }
 
+    //todo move to separate class
     private void initComponents(View rootView) {
         //get and init components
         mapView = rootView.findViewById(R.id.mapView);
@@ -530,12 +538,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         mapView.onStop();
     }
 
+    //todo move to util class
     // Additional method to convert dp to pixels
     public static int dpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return (int) (dp * density);
     }
 
+    //todo move to dialog class
     private void showAlert(Context context, String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 

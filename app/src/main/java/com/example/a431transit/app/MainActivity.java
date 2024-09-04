@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(savedStopsFragment);
         bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops_filled);
 
+        //todo: move to separate method
         //Once a user has chosen to move to another page from the bottom navigation view, display the appropriate fragment
         bottomNavigationView3.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

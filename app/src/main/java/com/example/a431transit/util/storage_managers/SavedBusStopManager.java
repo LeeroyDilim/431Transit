@@ -57,6 +57,7 @@ public class SavedBusStopManager {
         return busStops.containsKey(String.valueOf(busStop.getKey()));
     }
 
+    //todo decouple
     //load saved bus stops from external storage
     private Map<String, BusStop> loadBusStopsFromJson() {
         Map<String, BusStop> stopsMap = new HashMap<>();
