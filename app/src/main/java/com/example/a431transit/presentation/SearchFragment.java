@@ -1,6 +1,5 @@
 package com.example.a431transit.presentation;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +15,10 @@ import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
 import com.example.a431transit.objects.TransitResponse;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.presentation.Dialogs.SystemDialogs;
 import com.example.a431transit.util.bus_stop_list.BusStopAdapter;
 import com.example.a431transit.util.bus_stop_list.BusStopViewInterface;
-import com.example.a431transit.util.api_communication.TransitAPIService;
+import com.example.a431transit.api.transit_api.TransitAPIService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.widget.TextView;
 
 public class SearchFragment extends Fragment implements BusStopViewInterface {
@@ -80,17 +78,17 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
 
         //Check if user is searching by bus stop name or key
         if (query.matches("\\d+")) {
-            call = transitService.searchBusStopsByKey(Integer.parseInt(query), BuildConfig.TRANSIT_API_KEY);
+            call = transitService.fetchBusStopsByKey(Integer.parseInt(query), BuildConfig.TRANSIT_API_KEY);
         } else if (query.matches("#\\d+")) {
             //if user searches for a bus key with # at the beginning of the string
-            call = transitService.searchBusStopsByKey(Integer.parseInt(query.substring(1)), BuildConfig.TRANSIT_API_KEY);
+            call = transitService.fetchBusStopsByKey(Integer.parseInt(query.substring(1)), BuildConfig.TRANSIT_API_KEY);
         } else {
             //Have to do it like this as retrofit does not allow colons in the urls
             String baseUrl = "https://api.winnipegtransit.com/v3/";
             String path = "stops:" + query + ".json";
             String apiUrl = baseUrl + path;
 
-            call = transitService.searchBusStopsByName(apiUrl, BuildConfig.TRANSIT_API_KEY);
+            call = transitService.fetchBusStopsByName(apiUrl, BuildConfig.TRANSIT_API_KEY);
         }
 
         //make the api call
@@ -131,7 +129,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
                     //if failure did not come from a user entering a invalid string
                     if (response.code() != 404) {
                         Log.e("transitService", "Error: " + response.code() + " - " + response.message());
-                        showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
+                        SystemDialogs.showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
                     }
                 }
             }
@@ -148,7 +146,7 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
                     call.clone().enqueue(this);
                 } else {
                     Log.e("transitService", "Network request failed after three retries");
-                    showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
+                    SystemDialogs.showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
 
                     //signify that there are no bus stops to display with the failed search
                     emptySearchView.setVisibility(View.GONE);
@@ -165,13 +163,8 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
-        //todo util class!
         if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
-            Intent intent = new Intent(getContext(), BusArrivals.class);
-
-            intent.putExtra("BUS_STOP", busStops.get(position));
-
-            startActivity(intent);
+            MainActivity.startIntent(getContext(), busStops.get(position));
         }
     }
 
@@ -190,7 +183,6 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         busStopAdapter.updateData(busStops);
     }
 
-    //todo separate methods
     private void initComponents(View view) {
         searchView = view.findViewById(R.id.searchView);
         emptySearchView = view.findViewById(R.id.emptySearchView);
@@ -204,7 +196,6 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.i("Search", query);
                 searchBusStops(query);
                 return true;
             }
@@ -223,17 +214,4 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
 
         searchView.clearFocus();
     }
-
-    //todo dialog class
-    private void showAlert(Context context, String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        // Set the title and message for the alert dialog
-        builder.setTitle(title)
-                .setMessage(message);
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
 }

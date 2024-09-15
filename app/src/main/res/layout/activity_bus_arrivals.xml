@@ -137,6 +137,7 @@
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:background="@color/primary_theme"
+            android:onClick="openMenu"
             android:src="@drawable/icon_menu" />
 
         <!-- FlexboxLayout -->

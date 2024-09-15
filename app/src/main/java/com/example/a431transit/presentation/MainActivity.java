@@ -6,13 +6,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.example.a431transit.R;
-import com.example.a431transit.objects.bus_arrivals.route_schedules.scheduled_stops.bus.Bus;
 import com.example.a431transit.objects.bus_stop.BusStop;
-import com.example.a431transit.util.api_communication.TransitAPIClient;
-import com.example.a431transit.util.api_communication.TransitAPIService;
+import com.example.a431transit.api.transit_api.TransitAPIClient;
+import com.example.a431transit.api.transit_api.TransitAPIService;
 import com.example.a431transit.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -21,6 +23,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     //todo make api call retries be delegated to a single class
     ActivityMainBinding binding;
+
+    TransitAPIService transitService;
+    SavedStopsFragment savedStopsFragment;
+    SearchFragment searchFragment;
+    BottomNavigationView bottomNavigationView;
 
     //keep track of the list of bus stops the user searched for in the Search Fragment
     List<BusStop> busStopsList = null;
@@ -40,63 +47,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void initComponents() {
         //initialize a connection with the WPG Transit API
-        TransitAPIService transitService = TransitAPIClient.getApiService();
+        transitService = TransitAPIClient.getApiService();
 
         //get and init components
-        SavedStopsFragment savedStopsFragment = new SavedStopsFragment(transitService);
-        SearchFragment searchFragment = new SearchFragment(transitService);
-        BottomNavigationView bottomNavigationView3 = findViewById(R.id.bottomNavigationView3);
+        savedStopsFragment = new SavedStopsFragment(transitService);
+        searchFragment = new SearchFragment(transitService);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView3);
 
         //On startup, the Saved Stop fragment is displayed
         replaceFragment(savedStopsFragment);
-        bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops_filled);
+        bottomNavigationView.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops_filled);
 
-        //todo: move to separate method
         //Once a user has chosen to move to another page from the bottom navigation view, display the appropriate fragment
-        bottomNavigationView3.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-
-            //Do not do anything if user has clicked to display the fragment already displayed
-            if (itemId == currentFragment) {
-                return false;
-            }
-
-            currentFragment = itemId;
-
-            //If the current fragment was the search page, retrieve the searched list to display once the user comes back
-            if (currentFragment == bottomNavigationView3.getMenu().getItem(2).getItemId()) {
-                busStopsList = searchFragment.getBusStops();
-            }
-
-            //display the fragment requested by the user
-            if (itemId == R.id.saved_stops) {
-                replaceFragment(savedStopsFragment);
-
-                //Update Icons
-                item.setIcon(R.drawable.icon_saved_stops_filled);
-                bottomNavigationView3.getMenu().getItem(1).setIcon(R.drawable.icon_map);
-                bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.icon_search);
-            } else if (itemId == R.id.map) {
-                replaceFragment(new MapFragment(transitService));
-
-                //Update Icons
-                item.setIcon(R.drawable.icon_map_filled);
-                bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops);
-                bottomNavigationView3.getMenu().getItem(2).setIcon(R.drawable.icon_search);
-            } else if (itemId == R.id.search) {
-                replaceFragment(searchFragment);
-
-                //display the list that was previously searched by the user
-                searchFragment.setBusStops(busStopsList);
-
-                //Update Icons
-                item.setIcon(R.drawable.icon_search_filled);
-                bottomNavigationView3.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops);
-                bottomNavigationView3.getMenu().getItem(1).setIcon(R.drawable.icon_map);
-            }
-
-            return true;
-        });
+        bottomNavigationView.setOnItemSelectedListener(this::determineFragment);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -106,8 +69,56 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public void startIntent(BusStop busStop){
+    public static void startIntent(Context context, BusStop busStop){
+        Intent intent = new Intent(context, BusArrivals.class);
 
+        intent.putExtra("BUS_STOP", busStop);
+
+        context.startActivity(intent);
     }
 
+    public boolean determineFragment(MenuItem item){
+        int itemId = item.getItemId();
+
+        //Do not do anything if user has clicked to display the fragment already displayed
+        if (itemId == currentFragment) {
+            return false;
+        }
+
+        currentFragment = itemId;
+
+        //If the current fragment was the search page, retrieve the searched list to display once the user comes back
+        if (currentFragment == bottomNavigationView.getMenu().getItem(2).getItemId()) {
+            busStopsList = searchFragment.getBusStops();
+        }
+
+        //display the fragment requested by the user
+        if (itemId == R.id.saved_stops) {
+            replaceFragment(savedStopsFragment);
+
+            //Update Icons
+            item.setIcon(R.drawable.icon_saved_stops_filled);
+            bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.icon_map);
+            bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.icon_search);
+        } else if (itemId == R.id.map) {
+            replaceFragment(new MapFragment(transitService));
+
+            //Update Icons
+            item.setIcon(R.drawable.icon_map_filled);
+            bottomNavigationView.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops);
+            bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.icon_search);
+        } else if (itemId == R.id.search) {
+            replaceFragment(searchFragment);
+
+            //display the list that was previously searched by the user
+            searchFragment.setBusStops(busStopsList);
+
+            //Update Icons
+            item.setIcon(R.drawable.icon_search_filled);
+            bottomNavigationView.getMenu().getItem(0).setIcon(R.drawable.icon_saved_stops);
+            bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.icon_map);
+        }
+
+        return true;
+    }
 }

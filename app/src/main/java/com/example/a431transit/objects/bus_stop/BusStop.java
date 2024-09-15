@@ -23,7 +23,7 @@ import com.example.a431transit.objects.bus_route.BusRoute;
 import com.example.a431transit.objects.bus_stop.centre.Centre;
 import com.example.a431transit.objects.bus_stop.cross_street.CrossStreet;
 import com.example.a431transit.objects.bus_stop.street.Street;
-import com.example.a431transit.util.api_communication.TransitAPIService;
+import com.example.a431transit.api.transit_api.TransitAPIService;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -99,7 +99,7 @@ public class BusStop implements Serializable {
             updateRouteView(context, busRoutes, layout);
         } else {
             //make the api call
-            Call<TransitResponse> call = transitService.getBusStopRoutes(key, BuildConfig.TRANSIT_API_KEY);
+            Call<TransitResponse> call = transitService.fetchBusStopRoutes(key, BuildConfig.TRANSIT_API_KEY);
 
             call.enqueue(new Callback<TransitResponse>() {
                 @Override

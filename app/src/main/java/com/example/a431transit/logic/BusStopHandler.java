@@ -9,15 +9,15 @@ public class BusStopHandler {
 
     }
 
-    public void getNearbyBusStops(LatLng location) {
+    public void fetchBusStopByLocation(LatLng location) {
 
     }
 
-    public void searchBusStopByName(String query){
+    public void fetchBusStopsByName(String query){
 
     }
 
-    public void searchBusStopByKey(int query){
+    public void fetchBusStopsByKey(int query){
 
     }
 

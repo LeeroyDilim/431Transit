@@ -1,13 +1,9 @@
 package com.example.a431transit.presentation;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
+import com.example.a431transit.application.Conversion;
 import com.example.a431transit.objects.TransitResponse;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.presentation.Dialogs.SystemDialogs;
+import com.example.a431transit.presentation.front_end_objects.ImageButtonWithTimer;
 import com.example.a431transit.util.CustomInfoWindowAdapter;
-import com.example.a431transit.util.api_communication.TransitAPIService;
+import com.example.a431transit.api.transit_api.TransitAPIService;
 import com.example.a431transit.util.bus_stop_list.BusStopAdapter;
 import com.example.a431transit.util.bus_stop_list.BusStopViewInterface;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -69,7 +68,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     //fragment components
     private MapView mapView;
     private GoogleMap googleMap;
-    private ImageButton refreshButton;
+    private ImageButtonWithTimer refreshButton;
     private BusStopAdapter busStopAdapter;
 
     //marker that user put on the map
@@ -192,11 +191,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
                     return;
                 }
 
-                //todo move this to utility method/class
-                Intent intent = new Intent(getContext(), BusArrivals.class);
-                intent.putExtra("BUS_STOP", busStop);
-
-                startActivity(intent);
+                MainActivity.startIntent(getContext(), busStop);
             }
         });
     }
@@ -285,7 +280,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         }
 
         //make API call
-        call = transitService.getBusStopsByLocation(SEARCH_RADIUS, location.latitude, location.longitude, BuildConfig.TRANSIT_API_KEY);
+        call = transitService.fetchBusStopsByLocation(SEARCH_RADIUS, location.latitude, location.longitude, BuildConfig.TRANSIT_API_KEY);
 
         call.enqueue(new Callback<TransitResponse>() {
             @Override
@@ -303,7 +298,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
                 } else {
                     Log.e("transitService", "Error: " + response.code() + " - " + response.message());
-                    showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
+                    SystemDialogs.showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
 
                     //empty the list of any previous searches
                     busStops = new ArrayList<BusStop>();
@@ -323,7 +318,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
                     call.clone().enqueue(this);
                 } else {
                     Log.e("transitService", "Network request failed after three retries");
-                    showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
+                    SystemDialogs.showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
 
                     //empty the list of any previous searches
                     busStops = new ArrayList<BusStop>();
@@ -392,31 +387,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         mapView.onLowMemory();
     }
 
-    //todo move to util class
-    //Timer for the refresh button cooldown
-    private void startButtonTimer(long millisInFuture) {
-        // Timer finished, enable the button and reset its state
-        //timer for the refresh button
-        CountDownTimer countDownTimer = new CountDownTimer(millisInFuture, 1000) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
-
-            @Override
-            public void onFinish() {
-                // Timer finished, enable the button and reset its state
-                resetRefreshButton();
-            }
-        };
-
-        countDownTimer.start();
-    }
-    //todo move to util class
-    private void resetRefreshButton() {
-        refreshButton.setEnabled(true);
-        refreshButton.setImageResource(R.drawable.icon_refresh_enabled);
-    }
 
     @Override
     //Method that is called once the user has decided on whether to grant or deny location access
@@ -438,22 +408,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
-        //todo move to util class
         if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
-            Intent intent = new Intent(getContext(), BusArrivals.class);
-
-            intent.putExtra("BUS_STOP", busStops.get(position));
-
-            startActivity(intent);
+            MainActivity.startIntent(getContext(), busStops.get(position));
         }
     }
 
-    //todo move to separate class
+    //todo move to separate methods
     private void initComponents(View rootView) {
         //get and init components
         mapView = rootView.findViewById(R.id.mapView);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-        refreshButton = rootView.findViewById(R.id.MapRefreshLocationButton);
+
+        refreshButton = new ImageButtonWithTimer(rootView.findViewById(R.id.MapRefreshLocationButton));
+
         ImageButton currentLocationButton = rootView.findViewById(R.id.MapCurrentLocationButton);
 
         RecyclerView busStopListView = rootView.findViewById(R.id.MapRecyclerView);
@@ -461,27 +428,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         busStopAdapter = new BusStopAdapter(this, requireContext(), busStops, transitService);
         busStopListView.setAdapter(busStopAdapter);
 
+        //todo fix this omegalol?
         //set appropriate collapsed height for the bottom sheet
         //hardcoded! sorry
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(rootView.findViewById(R.id.mapBottomSheet));
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        bottomSheetBehavior.setPeekHeight(dpToPx(getContext(), 135));
+        bottomSheetBehavior.setPeekHeight(Conversion.dpToPx(getContext(), 135));
 
         //initialize listeners for the buttons
-        refreshButton.setOnClickListener(new View.OnClickListener() {
+        refreshButton.setOnClickListenerWithTimer(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (userMarker == null) {
-                    return;
+                if (userMarker != null) {
+                    updateMap(userMarkerLocation);
                 }
-
-                updateMap(userMarkerLocation);
-
-                //if the user is spamming the button, reduce the amount of requests
-                //they're making. One request per 10 seconds
-                refreshButton.setEnabled(false);
-                refreshButton.setImageResource(R.drawable.icon_refresh_disabled);
-                startButtonTimer(5000);
             }
         });
 
@@ -534,24 +494,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     public void onStop() {
         super.onStop();
         mapView.onStop();
-    }
-
-    //todo move to util class
-    // Additional method to convert dp to pixels
-    public static int dpToPx(Context context, int dp) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * density);
-    }
-
-    //todo move to dialog class
-    private void showAlert(Context context, String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        // Set the title and message for the alert dialog
-        builder.setTitle(title)
-                .setMessage(message);
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 }

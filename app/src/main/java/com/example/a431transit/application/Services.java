@@ -2,10 +2,8 @@ package com.example.a431transit.application;
 
 import com.example.a431transit.persistence.CategoryPersistence;
 import com.example.a431transit.persistence.SavedStopPersistence;
-import com.example.a431transit.persistence.TransitAPI;
 import com.example.a431transit.persistence.json.CategoryPersistenceJSON;
 import com.example.a431transit.persistence.json.SavedStopPersistenceJSON;
-import com.example.a431transit.persistence.transit_api_v3.TransitAPIV3;
 
 public class Services {
     private static CategoryPersistence categoryPersistence = null;
