@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:id="@+id/arrival_view"
     android:layout_height="match_parent"
     android:background="@color/primary_theme"
-    tools:context=".app.BusArrivals">
+    tools:context=".presentation.BusArrivals">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/ArrivalsToolbar"
@@ -137,11 +136,11 @@
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:background="@color/primary_theme"
+            android:onClick="openMenu"
             android:src="@drawable/icon_menu" />
 
         <!-- FlexboxLayout -->
         <HorizontalScrollView
-            android:id="@+id/ArrivalsBusRouteView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ArrivalsBusKey"

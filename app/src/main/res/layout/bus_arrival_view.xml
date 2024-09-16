@@ -74,7 +74,6 @@
         android:textSize="14sp"></TextView>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/arrivals_view_route_badge_container"

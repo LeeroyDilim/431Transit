@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/categoriesView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".app.SavedStopsFragment">
+    tools:context=".presentation.SavedStopsFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/SavedStopsToolBar"
@@ -23,13 +22,14 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
-            android:layout_marginEnd="30dp"
             android:background="@color/primary_theme"
+            android:contentDescription="Edit Categories"
+            android:onClick="editCategory"
             android:src="@drawable/icon_menu"
-            android:contentDescription="Edit Categories" />
+            tools:layout_editor_absoluteX="333dp"
+            tools:layout_editor_absoluteY="6dp" />
 
         <TextView
-            android:id="@+id/tvCenter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -64,7 +64,8 @@
             android:divider="@color/border"
             android:dividerHeight="1dp"
             android:foregroundTint="@color/divider"
-            android:orientation="vertical"></ExpandableListView>
+            android:orientation="vertical">
+        </ExpandableListView>
 
     </RelativeLayout>
 

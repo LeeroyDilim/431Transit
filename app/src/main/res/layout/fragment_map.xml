@@ -61,7 +61,6 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/MapToolBarBorder"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:background="@color/border"
@@ -76,7 +75,6 @@
         android:background="@drawable/bottom_sheet_shape">
 
         <ImageView
-            android:id="@+id/mapBottomSheetIcon"
             android:layout_width="50dp"
             android:layout_height="20dp"
             android:src="@drawable/icon_minimize"

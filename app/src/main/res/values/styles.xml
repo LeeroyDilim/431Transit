@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Your app theme -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- ... other style attributes ... -->
-    </style>
 
     <!-- Custom style for the menu items -->
     <style name="MyMenuStyle" parent="Widget.AppCompat.PopupMenu">
