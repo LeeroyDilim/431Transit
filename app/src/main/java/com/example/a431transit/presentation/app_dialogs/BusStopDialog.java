@@ -138,7 +138,6 @@ public class BusStopDialog {
                 checkedTextView.setChecked(checkedItems[position]);
             });
 
-            // Handle the submit button click
             submitButton.setOnClickListener(v -> {
                 //collect all bus routes that were selected to be displayed
                 List<String> newFilteredRoutes = new ArrayList<>();

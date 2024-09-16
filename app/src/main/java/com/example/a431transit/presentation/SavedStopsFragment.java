@@ -33,7 +33,6 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
     private CategoryList categoryList;
 
     public SavedStopsFragment() {
-
     }
 
     public SavedStopsFragment(TransitAPIService transitService) {
@@ -134,7 +133,6 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
             }
         });
 
-        // Move PopupMenu logic to Dialogs class
         editCategoryBtn.setOnClickListener(view -> CategoryDialogs.showEditCategoryMenu(
                 getContext(),
                 view,

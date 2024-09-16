@@ -33,7 +33,7 @@ public class GoogleStaticMapsClient {
             return null;
         }
 
-        // Create the Google Static Maps API URL
+        //create the Google Static Maps API URL
         String imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center="
                 + busStop.getCentre().getGeographic().getLatitude() + ","
                 + busStop.getCentre().getGeographic().getLongitude()
