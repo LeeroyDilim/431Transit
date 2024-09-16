@@ -24,7 +24,7 @@ import com.example.a431transit.application.Conversion;
 import com.example.a431transit.logic.BusStopHandler;
 import com.example.a431transit.objects.bus_stop.BusStop;
 import com.example.a431transit.presentation.front_end_objects.ImageButtonWithTimer;
-import com.example.a431transit.util.CustomInfoWindowAdapter;
+import com.example.a431transit.presentation.front_end_objects.CustomInfoWindowAdapter;
 import com.example.a431transit.api.transit_api.TransitAPIService;
 import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopAdapter;
 import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopViewInterface;

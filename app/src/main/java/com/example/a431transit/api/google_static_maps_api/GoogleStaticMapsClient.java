@@ -16,8 +16,6 @@ import com.example.a431transit.BuildConfig;
 import com.example.a431transit.application.AppConstants;
 import com.example.a431transit.objects.bus_stop.BusStop;
 
-import java.util.function.Consumer;
-
 public class GoogleStaticMapsClient {
     public static Runnable fetchImageRunnable(BusStop busStop, String shape, Context context, ImageView imageView) {
         int width, height, zoom;
@@ -57,7 +55,7 @@ public class GoogleStaticMapsClient {
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            Log.e("Google Static Maps API", "Failed to load image from Google Static Maps API");
+                            throw new RuntimeException("Failed to load image from Google Static Maps API");
                         }
 
                         @Override

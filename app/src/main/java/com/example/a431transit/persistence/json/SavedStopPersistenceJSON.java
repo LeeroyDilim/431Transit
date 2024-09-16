@@ -41,7 +41,7 @@ public class SavedStopPersistenceJSON implements ISavedStopPersistence {
                 stopsMap = gson.fromJson(jsonString.toString(), mapType);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to load bus stops: " + e.toString());
         }
 
         return stopsMap != null ? stopsMap : new HashMap<>();
@@ -56,7 +56,7 @@ public class SavedStopPersistenceJSON implements ISavedStopPersistence {
         try (OutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(json.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to save bus stops: " + e.toString());
         }
     }
 }
