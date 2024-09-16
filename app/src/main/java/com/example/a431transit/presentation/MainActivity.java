@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.a431transit.R;
+import com.example.a431transit.application.AppConstants;
 import com.example.a431transit.objects.bus_stop.BusStop;
 import com.example.a431transit.api.transit_api.TransitAPIClient;
 import com.example.a431transit.api.transit_api.TransitAPIService;
@@ -21,7 +22,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    //todo make api call retries be delegated to a single class
     ActivityMainBinding binding;
 
     TransitAPIService transitService;
@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_main);
+
+        AppConstants.setContext(getBaseContext());
 
         initComponents();
     }

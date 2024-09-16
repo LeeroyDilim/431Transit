@@ -1,50 +1,44 @@
 package com.example.a431transit.presentation;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
-import com.example.a431transit.objects.TransitResponse;
-import com.example.a431transit.objects.bus_arrivals.ArrivalInstance;
+import com.example.a431transit.api.google_static_maps_api.GoogleStaticMapsClient;
+import com.example.a431transit.api.transit_api.TransitAPIClient;
+import com.example.a431transit.api.transit_api.TransitAPIService;
+import com.example.a431transit.application.AppConstants;
+import com.example.a431transit.logic.BusStopHandler;
+import com.example.a431transit.logic.CategoryHandler;
+import com.example.a431transit.logic.SavedBusStopHandler;
 import com.example.a431transit.objects.bus_arrivals.route_schedules.RouteSchedule;
 import com.example.a431transit.objects.bus_arrivals.route_schedules.scheduled_stops.ScheduledStop;
 import com.example.a431transit.objects.bus_route.BusRoute;
 import com.example.a431transit.objects.bus_stop.BusStop;
-import com.example.a431transit.presentation.Dialogs.BusStopDialog;
-import com.example.a431transit.presentation.Dialogs.CategoryDialogs;
-import com.example.a431transit.presentation.Dialogs.SystemDialogs;
+import com.example.a431transit.presentation.app_dialogs.BusStopDialog;
+import com.example.a431transit.presentation.app_dialogs.CategoryDialogs;
+import com.example.a431transit.presentation.front_end_objects.ArrivalInstanceView;
+import com.example.a431transit.presentation.front_end_objects.BusRouteHolder;
 import com.example.a431transit.presentation.front_end_objects.ImageButtonWithTimer;
-import com.example.a431transit.util.bus_stop_list.BusArrivalAdapter;
-import com.example.a431transit.util.storage_managers.CategoriesManager;
-import com.example.a431transit.api.transit_api.TransitAPIClient;
-import com.example.a431transit.api.transit_api.TransitAPIService;
+import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusArrivalAdapter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class BusArrivals extends AppCompatActivity {
-    private CategoriesManager categoriesManager;
     private TransitAPIService transitService = TransitAPIClient.getApiService();
-    private List<ArrivalInstance> arrivalInstances = new ArrayList<>();
+    private List<ArrivalInstanceView> arrivalInstanceViews = new ArrayList<>();
 
     //The bus stop we are getting information from
     private BusStop busStop;
@@ -57,7 +51,7 @@ public class BusArrivals extends AppCompatActivity {
     private BusArrivalAdapter busArrivalViewAdapter;
     private TextView emptyArrivalsView;
     private TextView busNameView;
-    private LinearLayout horizontalScrollView;
+    private BusRouteHolder busRouteHolder;
     private ImageButtonWithTimer refreshButton;
 
     @Override
@@ -68,71 +62,20 @@ public class BusArrivals extends AppCompatActivity {
         //get bus stop that was passed through by fragment
         busStop = getIntent().getSerializableExtra("BUS_STOP", BusStop.class);
 
-        //TODO: communicate to logic layer instead
-        //get user saved stops from storage
-        categoriesManager = new CategoriesManager(this);
-
         //if user has saved this stop, get that copy of the data
         //stored version contains the nickname and filtered routes
-        if (categoriesManager.isBusStopSaved(busStop)) {
-            busStop = categoriesManager.getBusStop(busStop);
+        if (SavedBusStopHandler.isBusStopSaved(busStop)) {
+            busStop = SavedBusStopHandler.getBusStop(Integer.toString(busStop.getKey()));
         }
 
         //display bus stop information on the screen
         initComponents();
 
         //get latest bus arrival times
-        getArrivals();
+        BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList, this::showErrorDialog);
     }
 
-    //TODO: remove from presentation layer
-    //Make a call to the Winnipeg Transit API to get the bus schedule for this stop.
-    //Once a response has been received, render that data onto the screen
-    private void getArrivals() {
-        // Add a counter for retries
-        final int[] retryCount = {0};
-        Context context = this;
-
-        //Make API Call
-        Call<TransitResponse> call = transitService.fetchBusStopSchedule(busStop.getKey(), BuildConfig.TRANSIT_API_KEY);
-        call.enqueue(new Callback<TransitResponse>() {
-            @Override
-            public void onResponse(Call<TransitResponse> call, Response<TransitResponse> response) {
-                if (response.isSuccessful()) {
-                    //Extract the data from the response if there is any
-                    TransitResponse transitResponse = response.body();
-
-                    if (transitResponse == null) {
-                        return;
-                    }
-
-                    //Render data once received
-                    List<RouteSchedule> routeSchedules = transitResponse.getStopSchedule().getRouteSchedules();
-                    prepareArrivalsList(routeSchedules);
-                } else {
-                    //Either the request amount limit has been reached or a server error occured
-                    Log.e("transitService", "Error: " + response.code() + " - " + response.message());
-                    SystemDialogs.showAlert(context, "Arrivals Error", "Could not fulfill your request. Please try again later");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TransitResponse> call, Throwable t) {
-                Log.e("Arrivals", "Network request failed", t);
-                t.printStackTrace();
-
-                // Retry the request up to three times
-                if (retryCount[0] < 3) {
-                    retryCount[0]++;
-                    Log.i("Arrivals", "Retrying network request (Retry " + retryCount[0] + ")");
-                    call.clone().enqueue(this);
-                } else {
-                    Log.e("Arrivals", "Network request failed after three retries");
-                    SystemDialogs.showAlert(context, "Arrivals Error", "Could not fulfill your request. Please try again later");
-                }
-            }
-
-        });
+    private void showErrorDialog(String s) {
     }
 
     //Once we received the scheduled times, update the list and display it
@@ -141,7 +84,7 @@ public class BusArrivals extends AppCompatActivity {
         List<String> filteredRoutes = busStop.getFilteredRoutes();
 
         //clear the previous schedule from the list
-        arrivalInstances.clear();
+        arrivalInstanceViews.clear();
 
         for (RouteSchedule routeSchedule : routeSchedules) {
             BusRoute busRoute = routeSchedule.getRoute();
@@ -153,15 +96,15 @@ public class BusArrivals extends AppCompatActivity {
 
             //Create an arrival instance for each scheduled stop in each route
             for (ScheduledStop scheduledStop : routeSchedule.getScheduledStops()) {
-                ArrivalInstance arrivalInstance = new ArrivalInstance(busRoute.getBadgeLabel(), busRoute.getBadgeStyle(), busRoute.getName(),
+                ArrivalInstanceView arrivalInstanceView = new ArrivalInstanceView(busRoute.getBadgeLabel(), busRoute.getBadgeStyle(), busRoute.getName(),
                         scheduledStop.getTimes().getDeparture().getScheduled(), scheduledStop.getTimes().getDeparture().getEstimated(), scheduledStop.isCancelled());
 
-                arrivalInstances.add(arrivalInstance);
+                arrivalInstanceViews.add(arrivalInstanceView);
             }
         }
 
         //Display text for the user to signify that there are no buses scheduled to arrive at this stop
-        if (arrivalInstances.isEmpty()) {
+        if (arrivalInstanceViews.isEmpty()) {
             emptyArrivalsView.setVisibility(View.VISIBLE);
             busArrivalView.setVisibility(View.GONE);
         } else {
@@ -170,32 +113,32 @@ public class BusArrivals extends AppCompatActivity {
         }
 
         //sort this list by their departure times, in the earliest order
-        arrivalInstances.sort(Comparator.comparing(ArrivalInstance::getBusActualArrival));
+        arrivalInstanceViews.sort(Comparator.comparing(ArrivalInstanceView::getBusActualArrival));
 
         //update the list display
-        busArrivalViewAdapter.updateData(arrivalInstances);
+        busArrivalViewAdapter.updateData(arrivalInstanceViews);
     }
 
     //If user has chosen to rename a bus stop, display a alert dialog with an editable text
     private void renameBusStopDialog() {
         BusStopDialog.renameBusStopDialog(this, busStop, () -> {
-            //todo move to dialog and communicate with logic layer
-            categoriesManager.updateBusStop(busStop);
-
             busNameView.setText(busStop.getName());
         });
     }
 
     private void addOrRemoveFromCategories() {
-        CategoryDialogs.showAddOrRemoveFromCategoriesDialog(this, busStop, categoriesManager);
+        CategoryDialogs.showAddOrRemoveFromCategoriesDialog(this, busStop);
     }
 
     private void filterRoutes() {
-        BusStopDialog.showFilterRoutesDialog(this, busStop, categoriesManager, transitService, () -> {
+        BusStopDialog.showFilterRoutesDialog(this, busStop, () -> {
             // Update the display after filtering
-            busStop.loadBusRoutes(getBaseContext(), transitService, horizontalScrollView);
-            getArrivals();
+            BusStopHandler.fetchBusRoutes(busStop, busRouteHolder::updateRouteView, this::onError);
+            BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList, this::showErrorDialog);
         });
+    }
+
+    private void onError(String s) {
     }
 
     private void initComponents() {
@@ -206,7 +149,7 @@ public class BusArrivals extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.ArrivalsBackBtn);
         ImageButton savedButton = findViewById(R.id.ArrivalsSavedBtn);
         ImageButton menuButton = findViewById(R.id.ArrivalsBusMenuBtn);
-        horizontalScrollView = findViewById(R.id.ArrivalsScrollView);
+        busRouteHolder = new BusRouteHolder(getBaseContext(), busStop, findViewById(R.id.ArrivalsScrollView));
         emptyArrivalsView = findViewById(R.id.emptyArrivalsView);
 
         //initialize the refresh button
@@ -216,7 +159,7 @@ public class BusArrivals extends AppCompatActivity {
         //initialize the adapter for the recycler view
         busArrivalView = findViewById(R.id.busArrivalsView);
         busArrivalView.setLayoutManager(new LinearLayoutManager(this));
-        busArrivalViewAdapter = new BusArrivalAdapter(this, arrivalInstances, transitService);
+        busArrivalViewAdapter = new BusArrivalAdapter(this, arrivalInstanceViews, transitService);
         busArrivalView.setAdapter(busArrivalViewAdapter);
 
         //get bus stop values
@@ -226,12 +169,14 @@ public class BusArrivals extends AppCompatActivity {
         //set information displayed on screen
         busNameView.setText(busName);
         busKeyView.setText(busKey);
-        busStop.loadImage(this, busImageView, "square");
-        busStop.loadBusRoutes(this, transitService, horizontalScrollView);
 
-        //todo communicate with logic layer
+        BusStopHandler.fetchBusStopImage(busStop, AppConstants.RectangleImage.NAME, busImageView::setImageBitmap,
+                GoogleStaticMapsClient.fetchImageRunnable(busStop, AppConstants.RectangleImage.NAME, getBaseContext(), busImageView));
+
+        BusStopHandler.fetchBusRoutes(busStop, busRouteHolder::updateRouteView, this::onError);
+
         //If bus stop is in the "Saved" category, then display that it is so
-        if (categoriesManager.busStopInCategory("Saved", busStop)) {
+        if (CategoryHandler.isBusStopInCategory("Saved", busStop)) {
             savedButton.setImageResource(R.drawable.icon_saved_stops_filled);
         } else {
             savedButton.setImageResource(R.drawable.icon_saved_stops);
@@ -256,7 +201,7 @@ public class BusArrivals extends AppCompatActivity {
         });
 
         refreshButton.setOnClickListenerWithTimer(v -> {
-            getArrivals();
+            BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList, this::showErrorDialog);
 
             // For user feedback, make the list disappear for a short amount of time
             busArrivalView.setVisibility(View.INVISIBLE);
@@ -269,13 +214,12 @@ public class BusArrivals extends AppCompatActivity {
 
         //If user chooses to save/remove this bus stop, update the icon and storage
         savedButton.setOnClickListener(v -> {
-            //todo communicate with logic layer
-            if (categoriesManager.busStopInCategory("Saved", busStop)) {
-                categoriesManager.removeStopFromCategory("Saved", busStop);
+            if (CategoryHandler.isBusStopInCategory("Saved", busStop)) {
+                CategoryHandler.removeStopFromCategory("Saved", busStop);
                 savedButton.setImageResource(R.drawable.icon_saved_stops);
 
             } else {
-                categoriesManager.addStopToCategory("Saved", busStop);
+                CategoryHandler.addStopToCategory("Saved", busStop);
                 savedButton.setImageResource(R.drawable.icon_saved_stops_filled);
             }
         });

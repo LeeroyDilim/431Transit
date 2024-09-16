@@ -3,9 +3,8 @@ package com.example.a431transit.presentation.front_end_objects;
 import android.content.Context;
 import android.widget.ExpandableListView;
 
-import com.example.a431transit.R;
 import com.example.a431transit.application.AppConstants;
-import com.example.a431transit.util.bus_stop_expandable_list.CategoryExpandableListAdapter;
+import com.example.a431transit.presentation.front_end_objects.bus_stop_expandable_list.CategoryExpandableListAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -19,15 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a431transit.BuildConfig;
 import com.example.a431transit.R;
+import com.example.a431transit.application.AppConstants;
 import com.example.a431transit.application.Conversion;
-import com.example.a431transit.objects.TransitResponse;
+import com.example.a431transit.logic.BusStopHandler;
 import com.example.a431transit.objects.bus_stop.BusStop;
-import com.example.a431transit.presentation.Dialogs.SystemDialogs;
 import com.example.a431transit.presentation.front_end_objects.ImageButtonWithTimer;
 import com.example.a431transit.util.CustomInfoWindowAdapter;
 import com.example.a431transit.api.transit_api.TransitAPIService;
-import com.example.a431transit.util.bus_stop_list.BusStopAdapter;
-import com.example.a431transit.util.bus_stop_list.BusStopViewInterface;
+import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopAdapter;
+import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopViewInterface;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,12 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MapFragment extends Fragment implements OnMapReadyCallback, BusStopViewInterface {
-    //todo move permissions to separate class
     //connection to the TransitAPI
     private TransitAPIService transitService;
 
@@ -73,9 +68,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
 
     //marker that user put on the map
     private Marker userMarker;
-
-    //represents how far the app will look for bus stops
-    private final int SEARCH_RADIUS = 500;
 
     //possible locations for the user
     private LatLng currentLocation;
@@ -144,7 +136,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         map.setLatLngBoundsForCameraTarget(winnipegBounds);
         map.setMinZoomPreference(10.0f);
 
-        //todo: move to separate method
         //check permissions
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -258,77 +249,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         //add circle to the map
         currentLocationCircle = googleMap.addCircle(
                 new CircleOptions().center(location)
-                        .radius(SEARCH_RADIUS)
+                        .radius(AppConstants.getSearchRadius())
                         .strokeWidth(CIRCLE_STROKE_WIDTH)
                         .strokeColor(getContext().getColor(R.color.secondary_theme))
                         .strokePattern(strokePattern)
         );
 
         //make a call to the API
-        getNearbyBusStops(location);
+        BusStopHandler.fetchBusStopByLocation(location, this::updateBusStopMarkers, this::showError);
     }
 
-    //todo move to logic layer
-    private void getNearbyBusStops(LatLng location) {
-        // Add a counter for retries
-        final int[] retryCount = {0};
+    private void showError(String s) {
+    }
 
-        Call<TransitResponse> call;
-
-        if (location == null) {
+    private void updateBusStopMarkers(List<BusStop> busStops) {
+        if (busStops.isEmpty() || getContext() == null){
             return;
         }
 
-        //make API call
-        call = transitService.fetchBusStopsByLocation(SEARCH_RADIUS, location.latitude, location.longitude, BuildConfig.TRANSIT_API_KEY);
+        this.busStops = busStops;
 
-        call.enqueue(new Callback<TransitResponse>() {
-            @Override
-            public void onResponse(Call<TransitResponse> call, Response<TransitResponse> response) {
-                if (response.isSuccessful()) {
-                    TransitResponse transitResponse = response.body();
-
-                    //get response from the API
-                    busStops = transitResponse.getStops();
-
-                    //update map if there are nearby bus stops
-                    if (!busStops.isEmpty() && getContext() != null) {
-                        updateBusStopMarkers();
-                    }
-
-                } else {
-                    Log.e("transitService", "Error: " + response.code() + " - " + response.message());
-                    SystemDialogs.showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
-
-                    //empty the list of any previous searches
-                    busStops = new ArrayList<BusStop>();
-                    busStopAdapter.updateData(busStops);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TransitResponse> call, Throwable t) {
-                Log.e("transitService", "Network request failed", t);
-                t.printStackTrace();
-
-                // Retry the request up to three times
-                if (retryCount[0] < 3) {
-                    retryCount[0]++;
-                    Log.i("transitService", "Retrying network request (Retry " + retryCount[0] + ")");
-                    call.clone().enqueue(this);
-                } else {
-                    Log.e("transitService", "Network request failed after three retries");
-                    SystemDialogs.showAlert(getContext(), "Search Error", "Could not fulfill your request. Please try again later");
-
-                    //empty the list of any previous searches
-                    busStops = new ArrayList<BusStop>();
-                    busStopAdapter.updateData(busStops);
-                }
-            }
-        });
-    }
-
-    private void updateBusStopMarkers() {
         //Extract color from resource file and convert to hue
         int color = getResources().getColor(R.color.secondary_theme);
         float[] hsl = new float[3];
@@ -408,12 +348,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
     //Once a user has clicked a bus stop, create a new screen displaying the arrival times for that bus stop
     @Override
     public void onItemClick(int position) {
-        if (busStops.size() > 0 && position >= 0 & position < busStops.size()) {
+        if (busStops !=null || busStops.size() > 0 && position >= 0 & position < busStops.size()) {
             MainActivity.startIntent(getContext(), busStops.get(position));
         }
     }
 
-    //todo move to separate methods
     private void initComponents(View rootView) {
         //get and init components
         mapView = rootView.findViewById(R.id.mapView);
@@ -428,7 +367,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         busStopAdapter = new BusStopAdapter(this, requireContext(), busStops, transitService);
         busStopListView.setAdapter(busStopAdapter);
 
-        //todo fix this omegalol?
         //set appropriate collapsed height for the bottom sheet
         //hardcoded! sorry
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(rootView.findViewById(R.id.mapBottomSheet));

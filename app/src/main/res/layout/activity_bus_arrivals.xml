@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:id="@+id/arrival_view"
     android:layout_height="match_parent"
     android:background="@color/primary_theme"
     tools:context=".presentation.BusArrivals">
@@ -142,7 +141,6 @@
 
         <!-- FlexboxLayout -->
         <HorizontalScrollView
-            android:id="@+id/ArrivalsBusRouteView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ArrivalsBusKey"

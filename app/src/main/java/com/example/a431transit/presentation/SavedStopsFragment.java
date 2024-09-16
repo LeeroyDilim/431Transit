@@ -13,13 +13,13 @@ import androidx.fragment.app.Fragment;
 
 import com.example.a431transit.R;
 import com.example.a431transit.application.AppConstants;
+import com.example.a431transit.logic.CategoryHandler;
 import com.example.a431transit.objects.bus_stop.BusStop;
-import com.example.a431transit.presentation.Dialogs.CategoryDialogs;
+import com.example.a431transit.presentation.app_dialogs.CategoryDialogs;
 import com.example.a431transit.presentation.front_end_objects.CategoryList;
 import com.example.a431transit.api.transit_api.TransitAPIService;
-import com.example.a431transit.util.bus_stop_expandable_list.BusStopGridViewItemClickInterface;
-import com.example.a431transit.util.bus_stop_expandable_list.CategoryExpandableListAdapter;
-import com.example.a431transit.util.storage_managers.CategoriesManager;
+import com.example.a431transit.presentation.front_end_objects.bus_stop_expandable_list.BusStopGridViewItemClickInterface;
+import com.example.a431transit.presentation.front_end_objects.bus_stop_expandable_list.CategoryExpandableListAdapter;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,13 +29,11 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
     private TransitAPIService transitService;
     private List<String> categoryNames;
     private HashMap<String, List<BusStop>> categoryChildren;
-    //todo communicate to logic layer instead
-    private CategoriesManager categoriesManager;
     private CategoryExpandableListAdapter categoryExpandableListAdapter;
     private CategoryList categoryList;
 
     public SavedStopsFragment() {
-        // Required empty public constructor
+
     }
 
     public SavedStopsFragment(TransitAPIService transitService) {
@@ -56,8 +54,6 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_saved_stops, container, false);
 
-        //get user categories and saved stops from storage
-        categoriesManager = new CategoriesManager(getContext());
         prepareListData();
 
         initComponents(rootView);
@@ -71,18 +67,17 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
     //Load categories and bus stops from storage
     private void prepareListData() {
         //get most recent version of the json file
-        categoriesManager.update();
+        CategoryHandler.updateCategories();
 
-        //todo communicate through logic layer
         //get category list and order them by the earliest creation date
-        categoryNames = categoriesManager.getAllCategories();
+        categoryNames = CategoryHandler.getAllCategories();
         Collections.reverse(categoryNames);
 
         categoryChildren = new HashMap<>();
 
         //Since the category json stores pointers of the bus stop data, get actual bus stop instances
         for (String category : categoryNames) {
-            categoryChildren.put(category, categoriesManager.getBusStopsFromCategory(category));
+            categoryChildren.put(category, CategoryHandler.getBusStopsFromCategory(category));
         }
     }
 
@@ -107,11 +102,11 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
     }
 
     private void addCategoryDialog() {
-        CategoryDialogs.showAddCategoryDialog(getContext(), categoriesManager, this::updateCategoryList);
+        CategoryDialogs.showAddCategoryDialog(getContext(), this::updateCategoryList);
     }
 
     private void removeCategoriesDialog() {
-        CategoryDialogs.showRemoveCategoriesDialog(getContext(), categoriesManager, this::updateCategoryList);
+        CategoryDialogs.showRemoveCategoriesDialog(getContext(), this::updateCategoryList);
     }
 
     private void updateCategoryList() {

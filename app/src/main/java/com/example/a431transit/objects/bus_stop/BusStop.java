@@ -71,203 +71,6 @@ public class BusStop implements Serializable {
     @SerializedName("filteredRoutes")
     private List<String> filteredRoutes;
 
-    //todo delegate to a separate class
-    //store routes both in memory and in a cache
-    private static final LruCache<String, List<BusRoute>> routeCache = new LruCache<>(10 * 1024 * 1024);
-    private List<BusRoute> busRoutes;
-
-    //store bus stop images in a cache
-    private static final LruCache<String, Bitmap> imageCache = new LruCache<>(10 * 1024 * 1024);
-
-    //todo delegate to logic layer
-    //Make an API call to get the current routes that visit the stop
-    public void loadBusRoutes(final Context context, TransitAPIService transitService, ViewGroup layout) {
-        // Add a counter for retries
-        final int[] retryCount = {0};
-
-        //Check if the bus routes are stored in memory
-        if (busRoutes != null) {
-            updateRouteView(context, busRoutes, layout);
-            return;
-        }
-
-        //check if the bus routes are stored in the cache
-        List<BusRoute> cachedRoutes = routeCache.get(key + "route");
-
-        if (cachedRoutes != null) {
-            busRoutes = cachedRoutes;
-            updateRouteView(context, busRoutes, layout);
-        } else {
-            //make the api call
-            Call<TransitResponse> call = transitService.fetchBusStopRoutes(key, BuildConfig.TRANSIT_API_KEY);
-
-            call.enqueue(new Callback<TransitResponse>() {
-                @Override
-                public void onResponse(Call<TransitResponse> call, Response<TransitResponse> response) {
-                    if (response.isSuccessful()) {
-                        //extract the data from the api
-                        TransitResponse transitResponse = response.body();
-
-                        if (transitResponse == null) {
-                            return;
-                        }
-
-                        busRoutes = transitResponse.getBusRoutes();
-
-                        if (busRoutes == null) {
-                            return;
-                        }
-
-                        //render each route on to the given layout
-                        updateRouteView(context, busRoutes, layout);
-                    } else {
-                        Log.e("transitService", "Error: " + response.code() + " - " + response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<TransitResponse> call, Throwable t) {
-                    Log.e("transitService", "Network request failed", t);
-                    t.printStackTrace();
-
-                    // Retry the request up to three times
-                    if (retryCount[0] < 3) {
-                        retryCount[0]++;
-                        Log.i("transitService", "Retrying network request (Retry " + retryCount[0] + ")");
-                        call.clone().enqueue(this);
-                    } else {
-                        Log.e("transitService", "Network request failed after three retries");
-                    }
-                }
-            });
-        }
-    }
-
-    //todo move to front end
-    //For each bus route, create a text view and insert it into the given layout
-    private void updateRouteView(Context context, List<BusRoute> busRoutes, ViewGroup layout) {
-        //remove the previously displayed routes
-        layout.removeAllViews();
-
-        for (int i = 0; i < busRoutes.size(); i++) {
-            BusRoute busRoute = busRoutes.get(i);
-
-            TextView newText = createRouteTextView(context, busRoute);
-
-            //remove right margin of the last text view so it aligns nicely
-            if (i == busRoutes.size() - 1) {
-                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) newText.getLayoutParams();
-
-                if (layoutParams == null) {
-                    layoutParams = new ViewGroup.MarginLayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-                }
-
-                layoutParams.rightMargin = 0;
-                layoutParams.bottomMargin = 0;
-
-                newText.setLayoutParams(layoutParams);
-            }
-
-            //If user has chosen to not display a route, make it mostly transparent
-            if (filteredRoutes != null && !filteredRoutes.contains(busRoute.getKey())) {
-                newText.setAlpha(0.35f);
-            }
-
-            layout.addView(newText);
-        }
-    }
-
-    //todo move to front end
-    //Create a text view with the bus route's properties
-    private static TextView createRouteTextView(Context context, BusRoute busRoute) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        TextView output = (TextView) inflater.inflate(R.layout.bus_route_text_view, null);
-
-        //get the badge style of this route instance
-        int backgroundColor = android.graphics.Color.parseColor(busRoute.getBadgeStyle().getBackgroundColor());
-        int textColor = android.graphics.Color.parseColor(busRoute.getBadgeStyle().getTextColor());
-
-        //replace standard badge-style colours with colours that are easier on the eyes
-        if (backgroundColor == Color.WHITE) {
-            backgroundColor = Color.rgb(230, 230, 230);
-        }
-
-        //set margins for this text view
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) output.getLayoutParams();
-        if (layoutParams == null) {
-            layoutParams = new ViewGroup.MarginLayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-        }
-
-        layoutParams.rightMargin = 20;
-        layoutParams.bottomMargin = 20;
-        output.setLayoutParams(layoutParams);
-
-        //set the attributes for this text view
-        output.setId(View.generateViewId());
-        output.setText(busRoute.getNumber());
-        output.setTextColor(textColor);
-        output.setBackgroundColor(backgroundColor);
-
-        return output;
-    }
-
-    //todo move to logic layer end
-    //Communicate with the Google Static Maps API to fetch an image of the bus stop in google maps
-    public void loadImage(final Context context, final ImageView imageView, String shape) {
-        //dimensions of image requested
-        int width, height, zoom;
-
-        //todo WHAT?
-        //set the appropriate dimensions for this method call
-        if (shape.equals("circle")) {
-            width = 300;
-            height = 300;
-            zoom = 18;
-        } else if (shape.equals("square")) {
-            width = 900;
-            height = 400;
-            zoom = 17;
-        } else {
-            return;
-        }
-
-        //todo MOVE THIS SHIT TO PERSISTENCE NOW!!!!!
-        //create the url to send to the google static map api
-        String imageUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
-                "&zoom=" + zoom + "&size=" + width + "x" + height + "&markers=" + centre.getGeographic().getLatitude() + "," + centre.getGeographic().getLongitude() +
-                "&key=" + BuildConfig.GOOGLE_API_KEY;
-
-        // Check if the image is already in the cache
-        String cacheKey = key + shape + "image";
-        Bitmap cachedImage = imageCache.get(cacheKey);
-
-        if (cachedImage != null) {
-            // If the image is in the cache, use it directly
-            imageView.setImageBitmap(cachedImage);
-        } else {
-            // If the image is not in the cache, load it using Glide
-            Glide.with(context)
-                    .asBitmap()
-                    .load(imageUrl)
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                            // Save the image to the cache
-                            imageCache.put(cacheKey, resource);
-
-                            // Set the image to the ImageView
-                            imageView.setImageBitmap(resource);
-                        }
-                    });
-        }
-    }
-
     public int getKey() {
         return key;
     }
@@ -316,10 +119,6 @@ public class BusStop implements Serializable {
         return centre;
     }
 
-    public List<BusRoute> getBusRoutes() {
-        return busRoutes;
-    }
-
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
@@ -328,7 +127,6 @@ public class BusStop implements Serializable {
         isSaved = saved;
     }
 
-    //todo move to logic
     public Boolean inCategory(String category) {
         if (inCategories != null) {
             return inCategories.contains(category);
@@ -337,7 +135,6 @@ public class BusStop implements Serializable {
         return false;
     }
 
-    //todo move to logic
     public Boolean notInAnyCategory() {
         if (inCategories != null) {
             return inCategories.isEmpty();
@@ -346,7 +143,6 @@ public class BusStop implements Serializable {
         return false;
     }
 
-    //todo move to logic
     public void addCategory(String category) {
         if (inCategories == null) {
             inCategories = new ArrayList<>();
@@ -359,7 +155,6 @@ public class BusStop implements Serializable {
         return inCategories;
     }
 
-    //todo move to logic
     public List<String> getUserCategories() {
         List<String> output = null;
 
@@ -371,18 +166,15 @@ public class BusStop implements Serializable {
         return output;
     }
 
-    //todo move to logic
     public void removeCategory(String category) {
         if (inCategories != null) {
             inCategories.remove(category);
         }
     }
-    //todo move to logic
     public List<String> getFilteredRoutes() {
         return filteredRoutes;
     }
 
-    //todo move to logic
     public void setFilteredRoutes(List<String> filteredRoutes) {
         this.filteredRoutes = filteredRoutes;
     }
