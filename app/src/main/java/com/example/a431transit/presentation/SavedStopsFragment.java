@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import com.example.a431transit.R;
@@ -31,6 +33,7 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
     private HashMap<String, List<BusStop>> categoryChildren;
     private CategoryExpandableListAdapter categoryExpandableListAdapter;
     private CategoryList categoryList;
+    private ActivityResultLauncher<Intent> busStopResultLauncher;
 
     public SavedStopsFragment() {
     }
@@ -59,6 +62,16 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
 
         //Expand the categories in which the user has left expanded from the previous usage of this app
         categoryList.loadExpandedState();
+
+        //update the saved stops fragment once activity has finished
+        busStopResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        prepareListData();
+                        categoryExpandableListAdapter.setData(categoryNames, categoryChildren);
+                    }
+                });
 
         return rootView;
     }
@@ -97,7 +110,9 @@ public class SavedStopsFragment extends Fragment implements BusStopGridViewItemC
     @Override
     //If a user has clicked on a bus stop, show them its arrivals screen
     public void onGridViewBusStopClick(BusStop busStop) {
-        MainActivity.startIntent(getContext(), busStop);
+        Intent intent = new Intent(getContext(), BusArrivals.class);
+        intent.putExtra("BUS_STOP", busStop);
+        busStopResultLauncher.launch(intent);
     }
 
     private void addCategoryDialog() {

@@ -21,7 +21,8 @@ public class SavedBusStopHandler {
     // get a bus stop that is stored in storage
     public static BusStop getBusStop(String busStopKey) {
         if(!BusStopValidator.validateBusStopKey(busStopKey)){
-            Log.e("BusStopHandler","Invalid key passed!");
+            Log.e("SavedBusStopHandler","getBusStop Invalid key passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         return busStops.getOrDefault(busStopKey, null);
@@ -29,7 +30,8 @@ public class SavedBusStopHandler {
 
     public static void addBusStop(BusStop busStop) {
         if(!BusStopValidator.validateBusStop(busStop)){
-            Log.e("BusStopHandler","Invalid bus stop passed!");
+            Log.e("SavedBusStopHandler","addBusStop Invalid bus stop passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         busStops.put(Integer.toString(busStop.getKey()), busStop);
@@ -38,7 +40,8 @@ public class SavedBusStopHandler {
 
     public static void removeBusStop(BusStop busStop) {
         if(!BusStopValidator.validateBusStop(busStop)){
-            Log.e("BusStopHandler","Invalid bus stop passed!");
+            Log.e("SavedBusStopHandler","removeBusStop Invalid bus stop passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         busStops.remove(Integer.toString(busStop.getKey()));
@@ -48,7 +51,8 @@ public class SavedBusStopHandler {
     // Update an existing bus stop
     public static void updateBusStop(BusStop busStop) {
         if(!BusStopValidator.validateBusStop(busStop)){
-            Log.e("BusStopHandler","Invalid bus stop passed!");
+            Log.e("SavedBusStopHandler","updateBusStop Invalid bus stop passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         if (busStops.containsKey(Integer.toString(busStop.getKey()))) {
@@ -59,7 +63,8 @@ public class SavedBusStopHandler {
 
     public static boolean isBusStopSaved(BusStop busStop) {
         if(!BusStopValidator.validateBusStop(busStop)){
-            Log.e("BusStopHandler","Invalid bus stop passed!");
+            Log.e("SavedBusStopHandler","isBusStopSaved Invalid bus stop passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         return busStops.containsKey(Integer.toString(busStop.getKey()));

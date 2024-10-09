@@ -45,7 +45,7 @@ public class CategoryList {
         json = gson.toJson(expandedMap, new TypeToken<Map<String, Boolean>>() {
         }.getType());
 
-        File file = new File(context.getExternalFilesDir(null), AppConstants.getExpandedListFileName());
+        File file = new File(AppConstants.getFileDir(), AppConstants.EXPANDED_LIST_FILE_NAME);
         try (OutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(json.getBytes());
         } catch (IOException e) {
@@ -55,7 +55,7 @@ public class CategoryList {
 
     public void loadExpandedState() {
         try {
-            File file = new File(context.getExternalFilesDir(null), AppConstants.getExpandedListFileName());
+            File file = new File(AppConstants.getFileDir(), AppConstants.EXPANDED_LIST_FILE_NAME);
 
             if (file.exists()) {
                 // Read the file as a string

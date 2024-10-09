@@ -17,7 +17,7 @@ public class APIManager {
             try {
                 apiCall.run();
                 success = true;
-            } catch (Exception e) {
+            } catch (NetworkErrorException e) {
                 attempt++;
                 if (attempt >= MAX_RETRIES) {
                     throw new NetworkErrorException("Failed to fetch data after retrying up to " + MAX_RETRIES + "times");

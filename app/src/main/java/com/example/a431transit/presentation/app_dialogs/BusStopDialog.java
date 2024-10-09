@@ -153,7 +153,7 @@ public class BusStopDialog {
                 }
 
                 //update the bus stop and save the newest version to storage
-                BusStopHandler.setBusStopFilteredRoutes(busStop,filteredRoutes);
+                BusStopHandler.setBusStopFilteredRoutes(busStop,newFilteredRoutes);
 
                 onFilterApplied.run();
 
