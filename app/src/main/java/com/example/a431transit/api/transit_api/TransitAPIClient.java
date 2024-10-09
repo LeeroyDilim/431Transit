@@ -126,7 +126,7 @@ public class TransitAPIClient {
                         BUS_CACHE.putRoutes(Conversion.busKeyToRouteCacheKey(busStop), transitResponse.body().getBusRoutes());
                         onSuccess.accept(transitResponse.body().getBusRoutes());
                     } else {
-                        onError.accept("Error: " + transitResponse.code() + " - " + transitResponse.message());
+                        throw new RuntimeException("Error: " + transitResponse.code() + " - " + transitResponse.message());
                     }
                 }
 
