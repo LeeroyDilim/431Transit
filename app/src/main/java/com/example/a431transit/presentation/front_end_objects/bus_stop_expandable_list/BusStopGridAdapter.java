@@ -68,7 +68,7 @@ public class BusStopGridAdapter extends BaseAdapter {
         //update the view components
         holder.stopNameView.setText(busStop.getName());
         holder.stopKeyView.setText("#" + busStop.getKey());
-        BusStopHandler.fetchBusStopImage(busStop, AppConstants.RectangleImage.NAME, holder.stopImageView::setImageBitmap,
+        BusStopHandler.fetchBusStopImage(busStop, AppConstants.CircleImage.NAME, holder.stopImageView::setImageBitmap,
                 GoogleStaticMapsClient.fetchImageRunnable(busStop, AppConstants.RectangleImage.NAME, context, holder.stopImageView));
 
         return convertView;

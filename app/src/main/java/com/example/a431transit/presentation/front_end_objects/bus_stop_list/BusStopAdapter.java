@@ -66,7 +66,7 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
         // Convert busKey to String before setting it to TextView
         holder.busKeyView.setText("#" + busKey);
 
-        BusStopHandler.fetchBusStopImage(currentBusStop, AppConstants.RectangleImage.NAME, holder.imageView::setImageBitmap,
+        BusStopHandler.fetchBusStopImage(currentBusStop, AppConstants.CircleImage.NAME, holder.imageView::setImageBitmap,
                 GoogleStaticMapsClient.fetchImageRunnable(currentBusStop, AppConstants.RectangleImage.NAME, context, holder.imageView));
 
         //display the routes that stop at this stop

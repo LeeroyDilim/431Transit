@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.a431transit.R;
 import com.example.a431transit.logic.BusStopHandler;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.objects.exceptions.BadRequestException;
+import com.example.a431transit.objects.exceptions.NetworkErrorException;
 import com.example.a431transit.presentation.app_dialogs.SystemDialogs;
 import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopAdapter;
 import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopViewInterface;
@@ -74,9 +76,12 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
             } else {
                 BusStopHandler.fetchBusStopsByName(query, this::updateBusStopList);
             }
-        } catch (RuntimeException e){
+        } catch (NetworkErrorException e){
             SystemDialogs.showDefaultAlert(getContext(), "We had trouble searching for your bus stops.");
+        } catch (BadRequestException e){
+            SystemDialogs.showDefaultAlert(getContext(), "Not a valid search query!");
         }
+
     }
 
     private void showError(String s) {

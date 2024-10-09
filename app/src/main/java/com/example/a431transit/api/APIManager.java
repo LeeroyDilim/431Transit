@@ -2,6 +2,8 @@ package com.example.a431transit.api;
 
 import android.util.Log;
 
+import com.example.a431transit.objects.exceptions.NetworkErrorException;
+
 import java.util.function.Consumer;
 
 public class APIManager {
@@ -18,7 +20,7 @@ public class APIManager {
             } catch (Exception e) {
                 attempt++;
                 if (attempt >= MAX_RETRIES) {
-                    throw new RuntimeException("Failed to fetch data after retrying up to " + MAX_RETRIES + "times");
+                    throw new NetworkErrorException("Failed to fetch data after retrying up to " + MAX_RETRIES + "times");
                 }
             }
         }

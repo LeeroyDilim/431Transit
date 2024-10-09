@@ -9,6 +9,7 @@ import com.example.a431transit.objects.TransitResponse;
 import com.example.a431transit.objects.bus_arrivals.route_schedules.RouteSchedule;
 import com.example.a431transit.objects.bus_route.BusRoute;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.objects.exceptions.NetworkErrorException;
 import com.example.a431transit.persistence.IBusCache;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -46,13 +47,13 @@ public class TransitAPIClient {
                     if (response.isSuccessful() && response.body() != null) {
                         onSuccess.accept(response.body().getStops());
                     } else {
-                        throw new RuntimeException("Error: " + response.code() + " - " + response.message());
+                        throw new NetworkErrorException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
@@ -74,13 +75,13 @@ public class TransitAPIClient {
                         busStops.add(response.body().getStop());
                         onSuccess.accept(busStops);
                     } else {
-                        throw new RuntimeException("Error: " + response.code() + " - " + response.message());
+                        throw new NetworkErrorException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
@@ -99,13 +100,13 @@ public class TransitAPIClient {
                     if (transitResponse.isSuccessful() && transitResponse.body() != null) {
                         onSuccess.accept(transitResponse.body().getStops());
                     } else {
-                        throw new RuntimeException("Error: " + transitResponse.code() + " - " + transitResponse.message());
+                        throw new NetworkErrorException("Error: " + transitResponse.code() + " - " + transitResponse.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
@@ -126,13 +127,13 @@ public class TransitAPIClient {
                         BUS_CACHE.putRoutes(Conversion.busKeyToRouteCacheKey(busStop), transitResponse.body().getBusRoutes());
                         onSuccess.accept(transitResponse.body().getBusRoutes());
                     } else {
-                        throw new RuntimeException("Error: " + transitResponse.code() + " - " + transitResponse.message());
+                        throw new NetworkErrorException("Error: " + transitResponse.code() + " - " + transitResponse.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
@@ -151,13 +152,13 @@ public class TransitAPIClient {
                     if (response.isSuccessful() && response.body() != null) {
                         onSuccess.accept(response.body().getStopSchedule().getRouteSchedules());
                     } else {
-                        throw new RuntimeException("Error: " + response.code() + " - " + response.message());
+                        throw new NetworkErrorException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
