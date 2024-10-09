@@ -71,7 +71,12 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
 
         //display the routes that stop at this stop
         busRouteHolder = new BusRouteHolder(context, currentBusStop, holder.busRouteView);
-        BusStopHandler.fetchBusRoutes(currentBusStop, busRouteHolder::updateRouteView, this::onError);
+
+        try{
+            BusStopHandler.fetchBusRoutes(currentBusStop, busRouteHolder::updateRouteView);
+        } catch (RuntimeException e){
+            SystemDialogs.showDefaultAlert(context, "We had trouble fetching your bus routes.");
+        }
 
         // Add a ViewTreeObserver to get the dimensions after the layout pass
         holder.itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

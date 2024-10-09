@@ -29,7 +29,7 @@ public class TransitAPIClient {
     private static TransitAPIService apiService;
     private static final IBusCache BUS_CACHE = Services.getBusCache();
 
-    public static void fetchBusStopsByName(String query, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopsByName(String query, Consumer<List<BusStop>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             //have to do this because of api limitations :(
@@ -46,7 +46,7 @@ public class TransitAPIClient {
                     if (response.isSuccessful() && response.body() != null) {
                         onSuccess.accept(response.body().getStops());
                     } else {
-                        onError.accept("Error: " + response.code() + " - " + response.message());
+                        throw new RuntimeException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
@@ -57,10 +57,10 @@ public class TransitAPIClient {
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopsByKey(int query, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopsByKey(int query, Consumer<List<BusStop>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService()
@@ -74,7 +74,7 @@ public class TransitAPIClient {
                         busStops.add(response.body().getStop());
                         onSuccess.accept(busStops);
                     } else {
-                        onError.accept("Error: " + response.code() + " - " + response.message());
+                        throw new RuntimeException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
@@ -85,10 +85,10 @@ public class TransitAPIClient {
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopsByLocation(LatLng location, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopsByLocation(LatLng location, Consumer<List<BusStop>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService().fetchBusStopsByLocation(AppConstants.getSearchRadius(), location.latitude, location.longitude, BuildConfig.TRANSIT_API_KEY);
@@ -99,7 +99,7 @@ public class TransitAPIClient {
                     if (transitResponse.isSuccessful() && transitResponse.body() != null) {
                         onSuccess.accept(transitResponse.body().getStops());
                     } else {
-                        onError.accept("Error: " + transitResponse.code() + " - " + transitResponse.message());
+                        throw new RuntimeException("Error: " + transitResponse.code() + " - " + transitResponse.message());
                     }
                 }
 
@@ -110,10 +110,10 @@ public class TransitAPIClient {
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopRoutes(BusStop busStop, Consumer<List<BusRoute>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopRoutes(BusStop busStop, Consumer<List<BusRoute>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService().fetchBusStopRoutes(busStop.getKey(), BuildConfig.TRANSIT_API_KEY);
@@ -137,10 +137,10 @@ public class TransitAPIClient {
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopSchedule(BusStop busStop, Consumer<List<RouteSchedule>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopSchedule(BusStop busStop, Consumer<List<RouteSchedule>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService().fetchBusStopSchedule(busStop.getKey(), BuildConfig.TRANSIT_API_KEY);
@@ -151,7 +151,7 @@ public class TransitAPIClient {
                     if (response.isSuccessful() && response.body() != null) {
                         onSuccess.accept(response.body().getStopSchedule().getRouteSchedules());
                     } else {
-                        onError.accept("Error: " + response.code() + " - " + response.message());
+                        throw new RuntimeException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
@@ -162,7 +162,7 @@ public class TransitAPIClient {
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
     public static TransitAPIService getApiService() {

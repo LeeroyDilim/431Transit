@@ -159,8 +159,6 @@ public class BusStopDialog {
 
             dialog.show();
 
-        }, error -> {
-            SystemDialogs.showDefaultAlert(context, error);
         });
     }
 }

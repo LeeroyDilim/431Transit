@@ -45,20 +45,20 @@ public class BusStopHandler {
         }
     }
 
-    public static void fetchBusStopByLocation(LatLng location, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
-        TransitAPIClient.fetchBusStopsByLocation(location, onSuccess, onError);
+    public static void fetchBusStopByLocation(LatLng location, Consumer<List<BusStop>> onSuccess) {
+        TransitAPIClient.fetchBusStopsByLocation(location, onSuccess);
     }
 
-    public static void fetchBusStopsByName(String query, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopsByName(String query, Consumer<List<BusStop>> onSuccess) {
         Validator.validateString(query, "Query");
-        TransitAPIClient.fetchBusStopsByName(query, onSuccess, onError);
+        TransitAPIClient.fetchBusStopsByName(query, onSuccess);
     }
 
-    public static void fetchBusStopsByKey(int query, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
-        TransitAPIClient.fetchBusStopsByKey(query, onSuccess, onError);
+    public static void fetchBusStopsByKey(int query, Consumer<List<BusStop>> onSuccess) {
+        TransitAPIClient.fetchBusStopsByKey(query, onSuccess);
     }
 
-    public static void fetchBusRoutes(BusStop busStop, Consumer<List<BusRoute>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusRoutes(BusStop busStop, Consumer<List<BusRoute>> onSuccess) {
         Validator.validateBusStop(busStop);
 
         //check cache
@@ -70,11 +70,11 @@ public class BusStopHandler {
         }
 
         // If not in cache, run API call
-        TransitAPIClient.fetchBusStopRoutes(busStop, onSuccess, onError);
+        TransitAPIClient.fetchBusStopRoutes(busStop, onSuccess);
     }
 
-    public static void fetchBusStopSchedule(BusStop busStop, Consumer<List<RouteSchedule>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopSchedule(BusStop busStop, Consumer<List<RouteSchedule>> onSuccess) {
         Validator.validateBusStop(busStop);
-        TransitAPIClient.fetchBusStopSchedule(busStop, onSuccess, onError);
+        TransitAPIClient.fetchBusStopSchedule(busStop, onSuccess);
     }
 }
