@@ -67,7 +67,7 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
         holder.busKeyView.setText("#" + busKey);
 
         BusStopHandler.fetchBusStopImage(currentBusStop, AppConstants.CircleImage.NAME, holder.imageView::setImageBitmap,
-                GoogleStaticMapsClient.fetchImageRunnable(currentBusStop, AppConstants.RectangleImage.NAME, context, holder.imageView));
+                GoogleStaticMapsClient.fetchImageRunnable(currentBusStop, AppConstants.CircleImage.NAME, context, holder.imageView));
 
         //display the routes that stop at this stop
         busRouteHolder = new BusRouteHolder(context, currentBusStop, holder.busRouteView);

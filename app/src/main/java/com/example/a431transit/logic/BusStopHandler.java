@@ -31,7 +31,8 @@ public class BusStopHandler {
 
     public static void setBusStopFilteredRoutes(BusStop busStop, List<String> filteredRoutes) {
         if(!BusStopValidator.validateBusStop(busStop)){
-            Log.e("BusStopHandler","Invalid BusStop passed!");
+            Log.e("BusStopHandler","setBusStopFilteredRoutes Invalid BusStop passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         busStop.setFilteredRoutes(filteredRoutes);
@@ -40,7 +41,8 @@ public class BusStopHandler {
 
     public static void fetchBusStopImage(BusStop busStop, String shape, Consumer<Bitmap> cacheOperation, Runnable apiCall) {
         if(!BusStopValidator.validateBusStop(busStop) || !BusStopValidator.validateImageString(shape)){
-            Log.e("BusStopHandler","Invalid parameters passed!");
+            Log.e("BusStopHandler","fetchBusStopImage Invalid parameters passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         //check cache for image
@@ -55,7 +57,8 @@ public class BusStopHandler {
 
     public static void fetchBusStopByLocation(LatLng location, Consumer<List<BusStop>> onSuccess) {
         if(!BusStopValidator.validateLocation(location)){
-            Log.e("BusStopHandler","Invalid parameters passed!");
+            Log.e("BusStopHandler","fetchBusStopByLocation Invalid parameters passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         TransitAPIClient.fetchBusStopsByLocation(location, onSuccess);
@@ -70,7 +73,7 @@ public class BusStopHandler {
     }
 
     public static void fetchBusStopsByKey(int query, Consumer<List<BusStop>> onSuccess) {
-        if(!BusStopValidator.validateIntQuery(query)){
+        if(!BusStopValidator.validateKeyQuery(query)){
             throw new BadRequestException("Invalid Search Query");
         }
 
@@ -79,7 +82,8 @@ public class BusStopHandler {
 
     public static void fetchBusRoutes(BusStop busStop, Consumer<List<BusRoute>> onSuccess) {
         if(!BusStopValidator.validateBusStop(busStop)){
-            Log.e("BusStopHandler","Invalid parameters passed!");
+            Log.e("BusStopHandler","fetchBusRoutes Invalid parameters passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         //check cache
@@ -96,7 +100,8 @@ public class BusStopHandler {
 
     public static void fetchBusStopSchedule(BusStop busStop, Consumer<List<RouteSchedule>> onSuccess) {
         if(!BusStopValidator.validateBusStop(busStop)){
-            Log.e("BusStopHandler","Invalid parameters passed!");
+            Log.e("BusStopHandler","fetchBusStopSchedule Invalid parameters passed!");
+            throw new Error("Invalid Parameters Passed");
         }
 
         TransitAPIClient.fetchBusStopSchedule(busStop, onSuccess);
