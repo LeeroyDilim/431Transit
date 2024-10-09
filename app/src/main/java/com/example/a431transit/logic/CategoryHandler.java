@@ -1,9 +1,12 @@
 package com.example.a431transit.logic;
 
+import android.util.Log;
+
 import com.example.a431transit.application.Services;
+import com.example.a431transit.logic.validators.BusStopValidator;
+import com.example.a431transit.logic.validators.CategoryValidator;
 import com.example.a431transit.objects.bus_stop.BusStop;
 import com.example.a431transit.persistence.ICategoriesPersistence;
-import com.example.a431transit.logic.Validator;
 
 import java.util.List;
 
@@ -23,35 +26,46 @@ public class CategoryHandler {
     }
 
     public static List<BusStop> getBusStopsFromCategory(String category) {
-        Validator.validateString(category, "Category");
+        if(CategoryValidator.validateCategoryName(category)){
+            Log.e("BusStopHandler","Invalid parameters passed!");
+        }
         return categoriesPersistence.getBusStopsFromCategory(category);
     }
 
     public static void addStopToCategory(String category, BusStop busStop) {
-        Validator.validateString(category, "Category");
-        Validator.validateBusStop(busStop);
+        if(CategoryValidator.validateCategoryName(category) || BusStopValidator.validateBusStop(busStop)){
+            Log.e("BusStopHandler","Invalid parameters passed!");
+        }
+
         categoriesPersistence.addStopToCategory(category, busStop);
     }
 
     public static void removeStopFromCategory(String category, BusStop busStop) {
-        Validator.validateString(category, "Category");
-        Validator.validateBusStop(busStop);
+        if(CategoryValidator.validateCategoryName(category) || BusStopValidator.validateBusStop(busStop)){
+            Log.e("BusStopHandler","Invalid parameters passed!");
+        }
         categoriesPersistence.removeStopFromCategory(category, busStop);
     }
 
-    public static void addCategory(String categoryName) {
-        Validator.validateString(categoryName, "Category Name");
-        categoriesPersistence.addCategory(categoryName);
+    public static void addCategory(String category) {
+        if(CategoryValidator.validateCategoryName(category)){
+            Log.e("BusStopHandler","Invalid parameters passed!");
+        }
+        categoriesPersistence.addCategory(category);
     }
 
-    public static void removeCategory(String categoryName) {
-        Validator.validateString(categoryName, "Category Name");
-        categoriesPersistence.removeCategory(categoryName);
+    public static void removeCategory(String category) {
+        if(CategoryValidator.validateCategoryName(category)){
+            Log.e("BusStopHandler","Invalid parameters passed!");
+        }
+        categoriesPersistence.removeCategory(category);
     }
 
-    public static boolean isBusStopInCategory(String categoryName, BusStop busStop) {
-        Validator.validateString(categoryName, "Category Name");
-        Validator.validateBusStop(busStop);
-        return categoriesPersistence.busStopInCategory(categoryName, busStop);
+    public static boolean isBusStopInCategory(String category, BusStop busStop) {
+        if(CategoryValidator.validateCategoryName(category) || BusStopValidator.validateBusStop(busStop)){
+            Log.e("BusStopHandler","Invalid parameters passed!");
+        }
+
+        return categoriesPersistence.busStopInCategory(category, busStop);
     }
 }

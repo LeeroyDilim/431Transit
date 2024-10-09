@@ -9,6 +9,7 @@ import com.example.a431transit.objects.TransitResponse;
 import com.example.a431transit.objects.bus_arrivals.route_schedules.RouteSchedule;
 import com.example.a431transit.objects.bus_route.BusRoute;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.objects.exceptions.NetworkErrorException;
 import com.example.a431transit.persistence.IBusCache;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -29,7 +30,7 @@ public class TransitAPIClient {
     private static TransitAPIService apiService;
     private static final IBusCache BUS_CACHE = Services.getBusCache();
 
-    public static void fetchBusStopsByName(String query, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopsByName(String query, Consumer<List<BusStop>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             //have to do this because of api limitations :(
@@ -46,21 +47,21 @@ public class TransitAPIClient {
                     if (response.isSuccessful() && response.body() != null) {
                         onSuccess.accept(response.body().getStops());
                     } else {
-                        onError.accept("Error: " + response.code() + " - " + response.message());
+                        throw new NetworkErrorException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopsByKey(int query, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopsByKey(int query, Consumer<List<BusStop>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService()
@@ -74,21 +75,21 @@ public class TransitAPIClient {
                         busStops.add(response.body().getStop());
                         onSuccess.accept(busStops);
                     } else {
-                        onError.accept("Error: " + response.code() + " - " + response.message());
+                        throw new NetworkErrorException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopsByLocation(LatLng location, Consumer<List<BusStop>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopsByLocation(LatLng location, Consumer<List<BusStop>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService().fetchBusStopsByLocation(AppConstants.getSearchRadius(), location.latitude, location.longitude, BuildConfig.TRANSIT_API_KEY);
@@ -99,21 +100,21 @@ public class TransitAPIClient {
                     if (transitResponse.isSuccessful() && transitResponse.body() != null) {
                         onSuccess.accept(transitResponse.body().getStops());
                     } else {
-                        onError.accept("Error: " + transitResponse.code() + " - " + transitResponse.message());
+                        throw new NetworkErrorException("Error: " + transitResponse.code() + " - " + transitResponse.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopRoutes(BusStop busStop, Consumer<List<BusRoute>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopRoutes(BusStop busStop, Consumer<List<BusRoute>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService().fetchBusStopRoutes(busStop.getKey(), BuildConfig.TRANSIT_API_KEY);
@@ -126,21 +127,21 @@ public class TransitAPIClient {
                         BUS_CACHE.putRoutes(Conversion.busKeyToRouteCacheKey(busStop), transitResponse.body().getBusRoutes());
                         onSuccess.accept(transitResponse.body().getBusRoutes());
                     } else {
-                        onError.accept("Error: " + transitResponse.code() + " - " + transitResponse.message());
+                        throw new NetworkErrorException("Error: " + transitResponse.code() + " - " + transitResponse.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
-    public static void fetchBusStopSchedule(BusStop busStop, Consumer<List<RouteSchedule>> onSuccess, Consumer<String> onError) {
+    public static void fetchBusStopSchedule(BusStop busStop, Consumer<List<RouteSchedule>> onSuccess) {
         //prepare API call to be executed
         Runnable apiCallRunnable = () -> {
             Call<TransitResponse> call = getApiService().fetchBusStopSchedule(busStop.getKey(), BuildConfig.TRANSIT_API_KEY);
@@ -151,18 +152,18 @@ public class TransitAPIClient {
                     if (response.isSuccessful() && response.body() != null) {
                         onSuccess.accept(response.body().getStopSchedule().getRouteSchedules());
                     } else {
-                        onError.accept("Error: " + response.code() + " - " + response.message());
+                        throw new NetworkErrorException("Error: " + response.code() + " - " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransitResponse> call, Throwable throwable) {
-                    throw new RuntimeException("Network request failed: " + throwable.getMessage());
+                    throw new NetworkErrorException("Network request failed: " + throwable.getMessage());
                 }
             });
         };
 
-        APIManager.executeWithRetry(apiCallRunnable, onError);
+        APIManager.executeWithRetry(apiCallRunnable);
     }
 
     public static TransitAPIService getApiService() {

@@ -27,6 +27,7 @@ import com.example.a431transit.objects.bus_route.BusRoute;
 import com.example.a431transit.objects.bus_stop.BusStop;
 import com.example.a431transit.presentation.app_dialogs.BusStopDialog;
 import com.example.a431transit.presentation.app_dialogs.CategoryDialogs;
+import com.example.a431transit.presentation.app_dialogs.SystemDialogs;
 import com.example.a431transit.presentation.front_end_objects.ArrivalInstanceView;
 import com.example.a431transit.presentation.front_end_objects.BusRouteHolder;
 import com.example.a431transit.presentation.front_end_objects.ImageButtonWithTimer;
@@ -72,7 +73,11 @@ public class BusArrivals extends AppCompatActivity {
         initComponents();
 
         //get latest bus arrival times
-        BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList, this::showErrorDialog);
+        try {
+            BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList);
+        } catch (RuntimeException e){
+            SystemDialogs.showDefaultAlert(getBaseContext(),"We had trouble fetching your schedule.");
+        }
     }
 
     private void showErrorDialog(String s) {
@@ -133,8 +138,12 @@ public class BusArrivals extends AppCompatActivity {
     private void filterRoutes() {
         BusStopDialog.showFilterRoutesDialog(this, busStop, () -> {
             // Update the display after filtering
-            BusStopHandler.fetchBusRoutes(busStop, busRouteHolder::updateRouteView, this::onError);
-            BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList, this::showErrorDialog);
+            try {
+                BusStopHandler.fetchBusRoutes(busStop, busRouteHolder::updateRouteView);
+                BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList);
+            } catch (RuntimeException e) {
+                SystemDialogs.showDefaultAlert(getBaseContext(),"We had trouble getting you the latest bus stop information.");
+            }
         });
     }
 
@@ -173,7 +182,11 @@ public class BusArrivals extends AppCompatActivity {
         BusStopHandler.fetchBusStopImage(busStop, AppConstants.RectangleImage.NAME, busImageView::setImageBitmap,
                 GoogleStaticMapsClient.fetchImageRunnable(busStop, AppConstants.RectangleImage.NAME, getBaseContext(), busImageView));
 
-        BusStopHandler.fetchBusRoutes(busStop, busRouteHolder::updateRouteView, this::onError);
+        try{
+            BusStopHandler.fetchBusRoutes(busStop, busRouteHolder::updateRouteView);
+        } catch (RuntimeException e){
+            SystemDialogs.showDefaultAlert(getBaseContext(), "We had trouble fetching the latest arrivals.");
+        }
 
         //If bus stop is in the "Saved" category, then display that it is so
         if (CategoryHandler.isBusStopInCategory("Saved", busStop)) {
@@ -201,7 +214,11 @@ public class BusArrivals extends AppCompatActivity {
         });
 
         refreshButton.setOnClickListenerWithTimer(v -> {
-            BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList, this::showErrorDialog);
+            try {
+                BusStopHandler.fetchBusStopSchedule(busStop, this::prepareArrivalsList);
+            } catch (RuntimeException e){
+                SystemDialogs.showDefaultAlert(getBaseContext(),"We had trouble fetching your schedule.");
+            }
 
             // For user feedback, make the list disappear for a short amount of time
             busArrivalView.setVisibility(View.INVISIBLE);

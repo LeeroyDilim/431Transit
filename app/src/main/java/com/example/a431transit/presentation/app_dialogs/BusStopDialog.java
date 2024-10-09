@@ -21,6 +21,7 @@ import com.example.a431transit.R;
 import com.example.a431transit.logic.BusStopHandler;
 import com.example.a431transit.objects.bus_route.BusRoute;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.objects.exceptions.BadRequestException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,11 @@ public class BusStopDialog {
                 String nickname = inputText.getText().toString();
 
                 //update and save the bus stop in storage
-                BusStopHandler.setBusStopNickname(busStop, nickname);
+                try{
+                    BusStopHandler.setBusStopNickname(busStop, nickname);
+                } catch (BadRequestException e){
+                    SystemDialogs.showDefaultAlert(context, "Not a valid nickname!");
+                }
 
                 onRename.run();
 
@@ -159,8 +164,6 @@ public class BusStopDialog {
 
             dialog.show();
 
-        }, error -> {
-            SystemDialogs.showDefaultAlert(context, error);
         });
     }
 }

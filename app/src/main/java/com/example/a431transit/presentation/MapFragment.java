@@ -23,6 +23,7 @@ import com.example.a431transit.application.AppConstants;
 import com.example.a431transit.application.Conversion;
 import com.example.a431transit.logic.BusStopHandler;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.presentation.app_dialogs.SystemDialogs;
 import com.example.a431transit.presentation.front_end_objects.ImageButtonWithTimer;
 import com.example.a431transit.presentation.front_end_objects.CustomInfoWindowAdapter;
 import com.example.a431transit.api.transit_api.TransitAPIService;
@@ -256,7 +257,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, BusStop
         );
 
         //make a call to the API
-        BusStopHandler.fetchBusStopByLocation(location, this::updateBusStopMarkers, this::showError);
+        try{
+            BusStopHandler.fetchBusStopByLocation(location, this::updateBusStopMarkers);
+        } catch (RuntimeException e){
+            SystemDialogs.showDefaultAlert(getContext(), "We had trouble fetching nearby bus stop markers.");
+        }
     }
 
     private void showError(String s) {

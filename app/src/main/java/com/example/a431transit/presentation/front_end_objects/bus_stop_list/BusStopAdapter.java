@@ -66,12 +66,17 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.BusStopV
         // Convert busKey to String before setting it to TextView
         holder.busKeyView.setText("#" + busKey);
 
-        BusStopHandler.fetchBusStopImage(currentBusStop, AppConstants.RectangleImage.NAME, holder.imageView::setImageBitmap,
+        BusStopHandler.fetchBusStopImage(currentBusStop, AppConstants.CircleImage.NAME, holder.imageView::setImageBitmap,
                 GoogleStaticMapsClient.fetchImageRunnable(currentBusStop, AppConstants.RectangleImage.NAME, context, holder.imageView));
 
         //display the routes that stop at this stop
         busRouteHolder = new BusRouteHolder(context, currentBusStop, holder.busRouteView);
-        BusStopHandler.fetchBusRoutes(currentBusStop, busRouteHolder::updateRouteView, this::onError);
+
+        try{
+            BusStopHandler.fetchBusRoutes(currentBusStop, busRouteHolder::updateRouteView);
+        } catch (RuntimeException e){
+            SystemDialogs.showDefaultAlert(context, "We had trouble fetching your bus routes.");
+        }
 
         // Add a ViewTreeObserver to get the dimensions after the layout pass
         holder.itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.a431transit.R;
 import com.example.a431transit.logic.BusStopHandler;
 import com.example.a431transit.objects.bus_stop.BusStop;
+import com.example.a431transit.objects.exceptions.BadRequestException;
+import com.example.a431transit.objects.exceptions.NetworkErrorException;
+import com.example.a431transit.presentation.app_dialogs.SystemDialogs;
 import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopAdapter;
 import com.example.a431transit.presentation.front_end_objects.bus_stop_list.BusStopViewInterface;
 import com.example.a431transit.api.transit_api.TransitAPIService;
@@ -65,13 +68,20 @@ public class SearchFragment extends Fragment implements BusStopViewInterface {
         }
 
         //determine which API call to make based on the query
-        if (query.matches("\\d+")) {
-            BusStopHandler.fetchBusStopsByKey(Integer.parseInt(query), this::updateBusStopList, this::showError);
-        } else if (query.matches("#\\d+")) {
-            BusStopHandler.fetchBusStopsByKey(Integer.parseInt(query.substring(1)), this::updateBusStopList, this::showError);
-        } else {
-            BusStopHandler.fetchBusStopsByName(query, this::updateBusStopList, this::showError);
+        try {
+            if (query.matches("\\d+")) {
+                BusStopHandler.fetchBusStopsByKey(Integer.parseInt(query), this::updateBusStopList);
+            } else if (query.matches("#\\d+")) {
+                BusStopHandler.fetchBusStopsByKey(Integer.parseInt(query.substring(1)), this::updateBusStopList);
+            } else {
+                BusStopHandler.fetchBusStopsByName(query, this::updateBusStopList);
+            }
+        } catch (NetworkErrorException e){
+            SystemDialogs.showDefaultAlert(getContext(), "We had trouble searching for your bus stops.");
+        } catch (BadRequestException e){
+            SystemDialogs.showDefaultAlert(getContext(), "Not a valid search query!");
         }
+
     }
 
     private void showError(String s) {
