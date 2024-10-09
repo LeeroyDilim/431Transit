@@ -19,7 +19,7 @@ gen/
 
 # Gradle files
 .gradle/
-build/
+app/build/
 
 # Local configuration file (e.g., proguard-rules.pro)
 proguard-rules.pro
