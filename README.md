@@ -13,7 +13,7 @@
  * Can view nearby bus stops around a specified area by clicking on one part of the map and pressing refresh
 
 ## Video Overview
-* !(Youtube Video (1 min long)[https://www.youtube.com/shorts/FAZGTWwWyyA]
+* [Youtube Video (1 min)](https://www.youtube.com/shorts/FAZGTWwWyyA)
 
 ## How to Install
  * Requires an Android Phone, and Android Studio
